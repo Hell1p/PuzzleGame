@@ -6,7 +6,7 @@
 
 class UCameraComponent;
 class UPhysicsHandleComponent;
-
+class APlayerController;
 UCLASS()
 class PUZZLEGAME_API APuzzlePlayer : public ACharacter
 {
@@ -25,16 +25,37 @@ protected:
 	void Turn(float Value);
 	void GrabButtonPressed();
 	void GrabButtonReleased();
-
+	void SprintStart();
+	void SprintEnd();
+	void SetSprintingFOV(float DeltaTime);
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool bCrouching;
 private:
+	void DirectionalMovement();
+    
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* PlayerCamera;
-
+	
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsHandleComponent* PhysicsHandle;
 
 	UPROPERTY(EditAnywhere)
-	float GrabDistance = 150.f;
+	float GrabDistance = 300.f;
 
 	bool bGrabbingObject;
+	bool bSprinting;
+
+	float CurrentFOV = 90.f;
+	float SprintFOV = 110;
+	float DefaultFOV = 90.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float BaseSpeed = 500.f;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float MaxSpeedL_R = 475.f;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float MaxSpeedBwd = 435.f;
 };

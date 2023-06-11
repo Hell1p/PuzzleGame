@@ -1,7 +1,9 @@
 #include "PuzzlePlayer.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Camera/CameraComponent.h"
-
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Camera/CameraShakeBase.h"
+#include "GameFramework/PlayerController.h"
 APuzzlePlayer::APuzzlePlayer()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -21,10 +23,13 @@ void APuzzlePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	DirectionalMovement();
+	SetSprintingFOV(DeltaTime);
 	if (bGrabbingObject)
 	{
 		PhysicsHandle->SetTargetLocation(PlayerCamera->GetForwardVector() * GrabDistance + PlayerCamera->GetComponentLocation());
 	}
+
 }
 
 void APuzzlePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -38,6 +43,9 @@ void APuzzlePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	
 	PlayerInputComponent->BindAction(TEXT("GrabRequest"), IE_Pressed, this, &APuzzlePlayer::GrabButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("GrabRequest"), IE_Released, this, &APuzzlePlayer::GrabButtonReleased);
+	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &APuzzlePlayer::Jump);
+	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &APuzzlePlayer::SprintStart);
+	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &APuzzlePlayer::SprintEnd);
 }
 
 void APuzzlePlayer::MoveForward(float Value)
@@ -72,6 +80,38 @@ void APuzzlePlayer::Turn(float Value)
 	AddControllerYawInput(Value);
 }
 
+void APuzzlePlayer::SprintStart()
+{
+	if (!bCrouching)
+	{
+		bSprinting = true;
+		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	}
+	
+}
+void APuzzlePlayer::SprintEnd()
+{
+	bSprinting = false;
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+}
+
+void APuzzlePlayer::SetSprintingFOV(float DeltaTime)
+{
+		
+	if (bSprinting && !bCrouching)
+	{
+		CurrentFOV = FMath::FInterpTo(CurrentFOV, SprintFOV, DeltaTime, 2.f);
+		
+	}else
+	{
+		CurrentFOV = FMath::FInterpTo(CurrentFOV, DefaultFOV, DeltaTime, 10.f);
+	}
+	if (PlayerCamera)
+	{
+		PlayerCamera->SetFieldOfView(CurrentFOV);
+	}
+}
+
 void APuzzlePlayer::GrabButtonPressed()
 {
 	if (GetWorld() == nullptr) return;
@@ -83,7 +123,6 @@ void APuzzlePlayer::GrabButtonPressed()
 	bGrabbingObject = true;
 	DrawDebugLine(GetWorld(), PlayerCamera->GetComponentLocation(), PlayerCamera->GetForwardVector() * GrabDistance + PlayerCamera->GetComponentLocation(), FColor::Cyan, true, 2.f, 2, 2);
 }
-
 void APuzzlePlayer::GrabButtonReleased()
 {
 	if (bGrabbingObject)
@@ -93,3 +132,22 @@ void APuzzlePlayer::GrabButtonReleased()
 	}
 }
 
+void APuzzlePlayer::DirectionalMovement()
+{
+	FVector Velocity = GetVelocity();
+	FRotator Rotation = GetActorRotation();
+	float Direction = GetMesh()->GetAnimInstance()->CalculateDirection(Velocity, Rotation);
+	
+	if (Direction >= -50.f && Direction <= 50.f && !bSprinting && !bCrouching)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
+	}
+	if ((Direction <= 90.f && Direction > 50.f) || (Direction >= -90.f && Direction < -50.f) && !bSprinting && !bCrouching)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = MaxSpeedL_R;
+	}
+	if ((Direction < -90.f && Direction >= -180.f) || (Direction > 90.f && Direction <= 180.f))
+	{
+		GetCharacterMovement()->MaxWalkSpeed = MaxSpeedBwd;
+	}
+}
