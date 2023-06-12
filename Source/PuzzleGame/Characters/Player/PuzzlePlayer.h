@@ -7,6 +7,8 @@
 class UCameraComponent;
 class UPhysicsHandleComponent;
 class APlayerController;
+class APuzzleHUD;
+
 UCLASS()
 class PUZZLEGAME_API APuzzlePlayer : public ACharacter
 {
@@ -16,7 +18,7 @@ public:
 	APuzzlePlayer();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
 protected:
 	virtual void BeginPlay() override;
 	void MoveForward(float Value);
@@ -31,18 +33,21 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite)
 	bool bCrouching;
-private:
-	void DirectionalMovement();
-    
-	UPROPERTY(VisibleAnywhere)
+	
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	UCameraComponent* PlayerCamera;
 	
+private:
+	void DirectionalMovement();
+		
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsHandleComponent* PhysicsHandle;
 
 	UPROPERTY(EditAnywhere)
 	float GrabDistance = 300.f;
-
+	//vsem pr i roblox player 
+	APlayerController* PlayerController;
+	APuzzleHUD* HUD;
 	bool bGrabbingObject;
 	bool bSprinting;
 
@@ -58,4 +63,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MaxSpeedBwd = 435.f;
+
+
 };

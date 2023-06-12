@@ -2,8 +2,9 @@
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Camera/CameraShakeBase.h"
+#include "PuzzleGame/HUD/PuzzleHUD.h"
 #include "GameFramework/PlayerController.h"
+
 APuzzlePlayer::APuzzlePlayer()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,11 +13,13 @@ APuzzlePlayer::APuzzlePlayer()
 	PlayerCamera->SetupAttachment(RootComponent);
 
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
+	
 }
 
 void APuzzlePlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
 }
 
 void APuzzlePlayer::Tick(float DeltaTime)
@@ -29,9 +32,18 @@ void APuzzlePlayer::Tick(float DeltaTime)
 	{
 		PhysicsHandle->SetTargetLocation(PlayerCamera->GetForwardVector() * GrabDistance + PlayerCamera->GetComponentLocation());
 	}
+	
+	PlayerController = PlayerController == nullptr ? Cast<APlayerController>(Controller) : PlayerController;
+	if (PlayerController) HUD = HUD == nullptr ? Cast<APuzzleHUD>(PlayerController->GetHUD()) : HUD;
+	if (HUD == nullptr) return;
 
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(HitResult, PlayerCamera->GetComponentLocation(), PlayerCamera->GetForwardVector() * GrabDistance + PlayerCamera->GetComponentLocation(), ECollisionChannel::ECC_Visibility);
+	if (!HitResult.bBlockingHit) HUD->HideInteractCrosshair();
+	if (!HitResult.bBlockingHit) return;
+	if (HitResult.GetActor()->GetRootComponent()->IsSimulatingPhysics()) HUD->ShowInteractCrosshair();
+	else HUD->HideInteractCrosshair();
 }
-
 void APuzzlePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -82,7 +94,7 @@ void APuzzlePlayer::Turn(float Value)
 
 void APuzzlePlayer::SprintStart()
 {
-	if (!bCrouching)
+	if (!bCrouching )
 	{
 		bSprinting = true;
 		GetCharacterMovement()->MaxWalkSpeed = 600.f;
@@ -151,3 +163,5 @@ void APuzzlePlayer::DirectionalMovement()
 		GetCharacterMovement()->MaxWalkSpeed = MaxSpeedBwd;
 	}
 }
+
+
