@@ -16,16 +16,23 @@ class PUZZLEGAME_API APuzzleHUD : public AHUD
 
 public:
 	virtual void DrawHUD() override;
-
-	UPROPERTY(EditAnywhere, Category = PlayerStats)
-	TSubclassOf<UUserWidget> PlayerOverlayClass;
-	
-	UPlayerOverlay* PlayerOverlay;
 	
 	void HideInteractCrosshair();
 	void ShowInteractCrosshair();
+	void HideStaminaBar();
+	void ShowStaminaBar();
 
 protected:
 	virtual void BeginPlay() override;
 	void AddPlayerOverlay();
+
+private:
+	UPlayerOverlay* PlayerOverlay;
+	
+	UPROPERTY(EditAnywhere, Category = PlayerStats)
+	TSubclassOf<UUserWidget> PlayerOverlayClass;
+
+public:
+	void SetStaminaBarPercent(float Percent);
+	UPlayerOverlay* GetPlayerOverlay() const { return PlayerOverlay; }
 };
