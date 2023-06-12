@@ -5,7 +5,7 @@
 #include "PlayerOverlay.h"
 #include "GameFramework/PlayerController.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/Image.h"
+#include "Components/ProgressBar.h"
 
 void APuzzleHUD::BeginPlay()
 {
@@ -28,12 +28,13 @@ void APuzzleHUD::AddPlayerOverlay()
 	}
 }
 
+void APuzzleHUD::SetStaminaBarPercent(float Percent)
+{
+	if (PlayerOverlay) PlayerOverlay->StaminaBar->SetPercent(Percent);
+}
+
 void APuzzleHUD::HideInteractCrosshair()
 {
-	/*if (PlayerOverlay)
-	{
-		PlayerOverlay->InteractCrosshair->SetVisibility(ESlateVisibility::Hidden);
-	}*/
 	if (PlayerOverlay)
 	{
 		PlayerOverlay->PlayAnimation(PlayerOverlay->InteractCrosshairShow);
@@ -42,12 +43,18 @@ void APuzzleHUD::HideInteractCrosshair()
 
 void APuzzleHUD::ShowInteractCrosshair()
 {
-	/*if (PlayerOverlay)
-	{
-		PlayerOverlay->InteractCrosshair->SetVisibility(ESlateVisibility::Visible);
-	}*/
 	if (PlayerOverlay)
 	{
 		PlayerOverlay->PlayAnimation(PlayerOverlay->InteractCrosshairHide);
 	}
+}
+
+void APuzzleHUD::HideStaminaBar()
+{
+	if (PlayerOverlay) PlayerOverlay->PlayAnimation(PlayerOverlay->StaminaBarHide);
+}
+
+void APuzzleHUD::ShowStaminaBar()
+{
+	if (PlayerOverlay) PlayerOverlay->PlayAnimation(PlayerOverlay->StaminaBarShow);
 }

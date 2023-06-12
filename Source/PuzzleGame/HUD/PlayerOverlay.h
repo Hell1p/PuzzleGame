@@ -8,6 +8,7 @@
 
 class UImage;
 class UWidgetAnimation;
+class UProgressBar;
 
 UCLASS()
 class PUZZLEGAME_API UPlayerOverlay : public UUserWidget
@@ -18,6 +19,14 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UImage* InteractCrosshair;
 
+	UPROPERTY(meta = (BindWidget))
+	UProgressBar* StaminaBar;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* StaminaBarShow;
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* StaminaBarHide;
+	
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	UWidgetAnimation* InteractCrosshairShow;
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
