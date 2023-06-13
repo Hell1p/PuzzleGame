@@ -5,27 +5,34 @@
 #include "Camera/CameraShakeBase.h"
 #include "Components/ProgressBar.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "PuzzleGame/HUD/PlayerOverlay.h"
 #include "PuzzleGame/HUD/PuzzleHUD.h"
+#include "PuzzleGame/Tools/Flashlight.h"
 
 APuzzlePlayer::APuzzlePlayer()
 {
 	PrimaryActorTick.bCanEverTick = true;
-  
+
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	PlayerCamera->SetupAttachment(RootComponent);
 
+	GetMesh()->SetupAttachment(PlayerCamera);
+	
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
 }
 
 void APuzzlePlayer::BeginPlay()
 {
 	Super::BeginPlay();
+	if (GetMesh()) GetMesh()->SetVisibility(false);
+
+	InitializeInventoryTools();
 	InitializePuzzleOverlay();
 	CurrentStamina = MaxStamina;
 	if (HUD) HUD->GetPlayerOverlay()->StaminaBar->SetVisibility(ESlateVisibility::Hidden);
 	StaminaBarHidden = true;
-	if (GetMesh()) GetMesh()->SetVisibility(false);
 }
 
 void APuzzlePlayer::Tick(float DeltaTime)
@@ -37,7 +44,9 @@ void APuzzlePlayer::Tick(float DeltaTime)
 		PhysicsHandle->SetTargetLocation(PlayerCamera->GetForwardVector() * GrabDistance + PlayerCamera->GetComponentLocation());
 	}
 
-	if (bSprinting && CurrentStamina >= SprintCost)
+	FVector Velocity = GetVelocity();
+	Velocity.Z = 0.f;
+	if (bSprinting && CurrentStamina >= SprintCost && Velocity.Size() > 0.f)
 	{
 		UseStamina(SprintCost);
 		if (HUD) HUD->SetStaminaBarPercent(CurrentStamina / MaxStamina);
@@ -65,9 +74,13 @@ void APuzzlePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &APuzzlePlayer::MoveRight);
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APuzzlePlayer::LookUp);
 	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &APuzzlePlayer::Turn);
-	
+
 	PlayerInputComponent->BindAction(TEXT("GrabRequest"), IE_Pressed, this, &APuzzlePlayer::GrabButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("GrabRequest"), IE_Released, this, &APuzzlePlayer::GrabButtonReleased);
+	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &APuzzlePlayer::SprintStart);
+	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &APuzzlePlayer::SprintEnd);
+	PlayerInputComponent->BindAction(TEXT("On_OffFlashLight"), IE_Pressed, this, &APuzzlePlayer::FlashlightOn_Off);
 }
 
 void APuzzlePlayer::MoveForward(float Value)
@@ -105,12 +118,14 @@ void APuzzlePlayer::Turn(float Value)
 void APuzzlePlayer::SprintStart()
 {
 	if (CurrentStamina < SprintCost) return;
+	FVector Velocity = GetVelocity();
+	Velocity.Z = 0.f;
 	
 	if (!StaminaBarHidden)
 	{
 		StaminaBarHidden = false;
 	}
-	else StaminaBarShow();
+	else if (Velocity.Size() > 0.f) StaminaBarShow();
 
 	if (bCrouching) bWantsToSprint = true;
 	if (PlayerMovementDirectionState == EMovementDirectionState::EMDS_Backward) bWantsToSprint = true;
@@ -125,6 +140,21 @@ void APuzzlePlayer::SprintEnd()
 	bWantsToSprint = false;
 	bSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
+}
+
+void APuzzlePlayer::FlashlightOn_Off()
+{
+	if (Flashlight == nullptr) return;
+	if (!Flashlight->GetbFlashlightTurnedOn())
+	{
+		Flashlight->LightTurnOn();
+		Flashlight->SetbFlashlightTurnedOn(true);
+	}
+	else
+	{
+		Flashlight->LightTurnOff();
+		Flashlight->SetbFlashlightTurnedOn(false);
+	}
 }
 
 void APuzzlePlayer::SetSprintingFOV(float DeltaTime)
@@ -240,7 +270,6 @@ void APuzzlePlayer::InitializePuzzleOverlay()
 
 void APuzzlePlayer::RegenerateStamina(float DeltaTime)
 {
-	//if (!StaminaBarHidden) GetWorldTimerManager().ClearTimer(StaminaBarHideTimer);
 	CurrentStamina = FMath::Clamp(CurrentStamina + StaminaRegenRate * DeltaTime, 0.f, MaxStamina);
 	if (HUD) HUD->SetStaminaBarPercent(CurrentStamina / MaxStamina);
 }
@@ -263,3 +292,11 @@ void APuzzlePlayer::StaminaBarShow()
 	}
 }
 
+void APuzzlePlayer::InitializeInventoryTools()
+{
+	if (GetWorld() == nullptr) return;
+	AFlashlight* FlashlightToEquip = GetWorld()->SpawnActor<AFlashlight>(FlashlightClass);
+	if (FlashlightToEquip == nullptr) return;
+	Flashlight = FlashlightToEquip;
+	Flashlight->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("S_Flashlight"));
+}

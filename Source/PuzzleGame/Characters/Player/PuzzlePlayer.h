@@ -9,6 +9,7 @@ class UPhysicsHandleComponent;
 class APlayerController;
 class APlayerController;
 class APuzzleHUD;
+class AFlashlight;
 class UPlayerOverlay;
 
 UENUM(BlueprintType)
@@ -28,6 +29,7 @@ class PUZZLEGAME_API APuzzlePlayer : public ACharacter
 
 public:
 	APuzzlePlayer();
+	void InitializeInventoryTools();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -41,6 +43,8 @@ protected:
 	void GrabButtonReleased();
 	void SprintStart();
 	void SprintEnd();
+	void FlashlightOn_Off();
+	void FlashlightOff();
 	
 	UPROPERTY(BlueprintReadWrite)
 	bool bCrouching;
@@ -63,9 +67,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Movement, BlueprintReadOnly)
 	float DefaultFOV = 90.f;
 	float CurrentFOV;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UCameraComponent* PlayerCamera;
 
 private:
 	void RegenerateStamina(float DeltaTime);
+	void StaminaBarHide();
+	void StaminaBarShow();
 	void DirectionalMovement();
 	void StartSprintingWhenNeeded();
 	void InteractCrosshair();
@@ -77,18 +86,28 @@ private:
 	float RegenDeltaTime;
 	bool bWantsToSprint;
 	FTimerHandle StaminaRegenTimer;
-	
-	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* PlayerCamera;
+	float AO_Pitch;
+	FRotator StartingAimRotation;
+	APlayerController* PlayerController;
+	APuzzleHUD* HUD;
+	UPlayerOverlay* PlayerOverlay;
+	bool bGrabbingObject;
+	bool StaminaBarHidden;
+	bool StaminaBarTimerStarted;
+	FTimerHandle StaminaBarHideTimer;
 
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsHandleComponent* PhysicsHandle;
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
+	TSubclassOf<AFlashlight> FlashlightClass;
+	AFlashlight* Flashlight;
+
+	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float GrabDistance = 300.f;
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
-	float SprintCost = 0.5f;
+	float SprintCost = 0.25f;
 	
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float MaxStamina = 100.f;
@@ -101,18 +120,4 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float StaminaBar_Hide_ShowDelay = 10.f;
-	
-	bool StaminaBarHidden;
-	bool StaminaBarTimerStarted;
-	FTimerHandle StaminaBarHideTimer;
-	void StaminaBarHideTimerStart();
-	void OnStaminaBarHideFinished();
-	void StaminaBarHide();
-	void StaminaBarShow();
-
-	
-	APlayerController* PlayerController;
-	APuzzleHUD* HUD;
-	UPlayerOverlay* PlayerOverlay;
-	bool bGrabbingObject;
 };
