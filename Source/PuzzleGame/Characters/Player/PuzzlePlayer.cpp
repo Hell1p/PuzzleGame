@@ -2,7 +2,6 @@
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Camera/CameraShakeBase.h"
 #include "Components/ProgressBar.h"
 #include "GameFramework/PlayerController.h"
 #include "PuzzleGame/HUD/PlayerOverlay.h"
