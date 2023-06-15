@@ -9,8 +9,10 @@ class UPhysicsHandleComponent;
 class APlayerController;
 class APlayerController;
 class APuzzleHUD;
+class ARCCar;
 class AFlashlight;
 class UPlayerOverlay;
+class APuzzlePlayerController;
 
 UENUM(BlueprintType)
 enum class EMovementDirectionState : uint8
@@ -34,10 +36,13 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	void HandleStamina(float DeltaTime);
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void LookUp(float Value);
 	void Turn(float Value);
+	void RotateGrabbedObject_Right(float Value);
+	void RotateGrabbedObject_Left(float Value);
 	void GrabButtonPressed();
 	void GrabButtonReleased();
 	void SprintStart();
@@ -81,7 +86,9 @@ private:
 	void UseStamina(float StaminaCost);
 	void InitializeInventoryTools();
 	void FlashlightOn_Off();
+	void ToggleRCCar();
 
+	APuzzlePlayerController* PuzzlePlayerController;
 	float RegenDeltaTime;
 	bool bWantsToSprint;
 	FTimerHandle StaminaRegenTimer;
@@ -94,6 +101,10 @@ private:
 	bool StaminaBarHidden;
 	bool StaminaBarTimerStarted;
 	FTimerHandle StaminaBarHideTimer;
+
+	UPROPERTY(EditAnywhere, Category = PlayerStats)
+	TSubclassOf<ARCCar> RCCarClass;
+	ARCCar* RCCar;
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	TSubclassOf<AFlashlight> FlashlightClass;
@@ -116,7 +127,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float StaminaBar_Hide_ShowDelay = 10.f;
-
+	
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsHandleComponent* PhysicsHandle;
+
+public:
+	APuzzlePlayerController* GetPuzzlePlayerController();
 };

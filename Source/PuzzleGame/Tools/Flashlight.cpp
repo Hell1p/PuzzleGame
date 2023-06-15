@@ -35,4 +35,3 @@ void AFlashlight::LightTurnOn()
 {
 	SpotLight->SetVisibility(true);
 }
-

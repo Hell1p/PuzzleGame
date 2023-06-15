@@ -2,6 +2,8 @@
 
 
 #include "PuzzleAnimInstance.h"
+
+#include "Kismet/KismetMathLibrary.h"
 #include "PuzzleGame/Characters/Player/PuzzlePlayer.h"
 
 void UPuzzleAnimInstance::NativeInitializeAnimation()
@@ -17,4 +19,5 @@ void UPuzzleAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 	if (PuzzlePlayer == nullptr) PuzzlePlayer = Cast<APuzzlePlayer>(TryGetPawnOwner());
 	if (PuzzlePlayer == nullptr) return;
+
 }

@@ -6,7 +6,9 @@
 #include "GameFramework/PlayerController.h"
 #include "PuzzleGame/HUD/PlayerOverlay.h"
 #include "PuzzleGame/HUD/PuzzleHUD.h"
+#include "PuzzleGame/Pawns/RCCar/RCCar.h"
 #include "PuzzleGame/Tools/Flashlight.h"
+#include "PuzzleGame/PlayerController/PuzzlePlayerController.h"
 
 APuzzlePlayer::APuzzlePlayer()
 {
@@ -40,22 +42,8 @@ void APuzzlePlayer::Tick(float DeltaTime)
 	{
 		PhysicsHandle->SetTargetLocation(PlayerCamera->GetForwardVector() * GrabDistance + PlayerCamera->GetComponentLocation());
 	}
-
-	FVector Velocity = GetVelocity();
-	Velocity.Z = 0.f;
-	if (bSprinting && CurrentStamina >= SprintCost && Velocity.Size() > 0.f)
-	{
-		UseStamina(SprintCost);
-		if (HUD) HUD->SetStaminaBarPercent(CurrentStamina / MaxStamina);
-	}
-	if (bSprinting && CurrentStamina < SprintCost) bSprinting = false;
-	if (!bSprinting) RegenerateStamina(DeltaTime);
-
-	if (CurrentStamina == MaxStamina && !StaminaBarHidden)
-	{
-		StaminaBarHide();
-	}
 	
+	HandleStamina(DeltaTime);
 	StartSprintingWhenNeeded();
 	DirectionalMovement();
 	SetSprintingFOV(DeltaTime);
@@ -71,6 +59,8 @@ void APuzzlePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &APuzzlePlayer::MoveRight);
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APuzzlePlayer::LookUp);
 	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &APuzzlePlayer::Turn);
+	PlayerInputComponent->BindAxis(TEXT("RotateGrabbedObject_Right"), this, &APuzzlePlayer::RotateGrabbedObject_Right);
+	PlayerInputComponent->BindAxis(TEXT("RotateGrabbedObject_Left"), this, &APuzzlePlayer::RotateGrabbedObject_Left);
 
 	PlayerInputComponent->BindAction(TEXT("GrabRequest"), IE_Pressed, this, &APuzzlePlayer::GrabButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("GrabRequest"), IE_Released, this, &APuzzlePlayer::GrabButtonReleased);
@@ -78,6 +68,7 @@ void APuzzlePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &APuzzlePlayer::SprintStart);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &APuzzlePlayer::SprintEnd);
 	PlayerInputComponent->BindAction(TEXT("On_OffFlashLight"), IE_Pressed, this, &APuzzlePlayer::FlashlightOn_Off);
+	PlayerInputComponent->BindAction(TEXT("ToggleRCCar"), IE_Pressed, this, &APuzzlePlayer::ToggleRCCar);
 }
 
 void APuzzlePlayer::MoveForward(float Value)
@@ -292,8 +283,69 @@ void APuzzlePlayer::StaminaBarShow()
 void APuzzlePlayer::InitializeInventoryTools()
 {
 	if (GetWorld() == nullptr) return;
+	/** Flashlight */
+	if (FlashlightClass == nullptr) return;
 	AFlashlight* FlashlightToEquip = GetWorld()->SpawnActor<AFlashlight>(FlashlightClass);
 	if (FlashlightToEquip == nullptr) return;
 	Flashlight = FlashlightToEquip;
 	Flashlight->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("S_Flashlight"));
+
+	/** RCCar */
+	if (RCCarClass == nullptr) return;
+	ARCCar* RCCarToEquip = GetWorld()->SpawnActor<ARCCar>(RCCarClass);
+	if (RCCarToEquip == nullptr) return;
+	RCCar = RCCarToEquip;
+	RCCar->SetOwner(this);
+}
+
+void APuzzlePlayer::HandleStamina(float DeltaTime)
+{
+	FVector Velocity = GetVelocity();
+	Velocity.Z = 0.f;
+	if (bSprinting && CurrentStamina >= SprintCost && Velocity.Size() > 0.f)
+	{
+		UseStamina(SprintCost);
+		if (HUD) HUD->SetStaminaBarPercent(CurrentStamina / MaxStamina);
+	}
+	if (bSprinting && CurrentStamina < SprintCost) bSprinting = false;
+	if (!bSprinting) RegenerateStamina(DeltaTime);
+
+	if (CurrentStamina == MaxStamina && !StaminaBarHidden)
+	{
+		StaminaBarHide();
+	}
+}
+
+void APuzzlePlayer::ToggleRCCar()
+{
+	if (RCCar == nullptr) return;
+	
+	PuzzlePlayerController = PuzzlePlayerController == nullptr ? Cast<APuzzlePlayerController>(Controller) : PuzzlePlayerController;
+	if (PuzzlePlayerController == nullptr) return;
+	GetMovementComponent()->StopMovementImmediately();
+	RCCar->Activate(this, PuzzlePlayerController);
+}
+
+APuzzlePlayerController* APuzzlePlayer::GetPuzzlePlayerController()
+{
+	PuzzlePlayerController = PuzzlePlayerController == nullptr ? Cast<APuzzlePlayerController>(Controller) : PuzzlePlayerController;
+	return PuzzlePlayerController;
+}
+
+void APuzzlePlayer::RotateGrabbedObject_Right(float Value)
+{
+	if (Value == 0.f) return;
+	FRotator PrevRotation;
+	FVector PrevLocation;
+	PhysicsHandle->GetTargetLocationAndRotation(PrevLocation, PrevRotation);
+	PhysicsHandle->SetTargetRotation(FRotator(PrevRotation.Pitch, ++PrevRotation.Yaw, PrevRotation.Roll));
+}
+
+void APuzzlePlayer::RotateGrabbedObject_Left(float Value)
+{
+	if (Value == 0.f) return;
+	FRotator PrevRotation;
+	FVector PrevLocation;
+	PhysicsHandle->GetTargetLocationAndRotation(PrevLocation, PrevRotation);
+	PhysicsHandle->SetTargetRotation(FRotator(PrevRotation.Pitch, --PrevRotation.Yaw, PrevRotation.Roll));
 }
