@@ -68,7 +68,7 @@ protected:
 	float MaxSpeedBwd = 435.f;
 	
 	UPROPERTY(EditAnywhere, Category = Movement, BlueprintReadOnly)
-	float SprintFOV = 110;
+	float SprintFOV = 110.f;
 	UPROPERTY(EditAnywhere, Category = Movement, BlueprintReadOnly)
 	float DefaultFOV = 90.f;
 	float CurrentFOV;

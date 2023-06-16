@@ -13,9 +13,6 @@ ARCCar::ARCCar()
 
 	RCControllerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RCController"));
 	RCControllerMesh->SetVisibility(false);
-
-	RCCarMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("RCCarMesh"));
-	RCCarMesh->SetupAttachment(RootComponent);
 }
 
 void ARCCar::BeginPlay()

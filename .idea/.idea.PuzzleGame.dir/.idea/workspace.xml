@@ -1,7 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7f1b51a4-ff20-447e-a66f-d40950c49b06" name="Changes" comment="" />
+    <list default="true" id="7f1b51a4-ff20-447e-a66f-d40950c49b06" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.PuzzleGame.dir/.idea/indexLayout.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.PuzzleGame.dir/.idea/projectSettingsUpdater.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.PuzzleGame.dir/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Content/Blueprints/Pawns/RCCar/BP_RCCar.uasset" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/PuzzleGame/Pawns/RCCar/RCCar.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/PuzzleGame/Pawns/RCCar/RCCar.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultInput.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultInput.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/AnimStarterPack/UE4_Mannequin/Mesh/UE4_Mannequin_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/AnimStarterPack/UE4_Mannequin/Mesh/UE4_Mannequin_Skeleton.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Characters/Player/ABP_PuzzlePlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Characters/Player/ABP_PuzzlePlayer.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Characters/Player/AimOffset.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Pawns/Drone/BP_Drone.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PuzzleGame.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/PuzzleGame.uproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PuzzleGame/Characters/Player/AnimInstance/PuzzleAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PuzzleGame/Characters/Player/AnimInstance/PuzzleAnimInstance.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PuzzleGame/Characters/Player/PuzzlePlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PuzzleGame/Characters/Player/PuzzlePlayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PuzzleGame/Characters/Player/PuzzlePlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PuzzleGame/Characters/Player/PuzzlePlayer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PuzzleGame/Pawns/Drone/Drone.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PuzzleGame/Pawns/Drone/Drone.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PuzzleGame/PuzzleGame.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PuzzleGame/PuzzleGame.Build.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PuzzleGame/Tools/Flashlight.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PuzzleGame/Tools/Flashlight.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,21 +40,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\egors\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\DecompilerCache",
-      "C:\\Users\\egors\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\SourcesCache",
-      "C:\\Users\\egors\\AppData\\Local\\Symbols\\src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;C:\\Users\\egors\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\egors\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\egors\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -42,6 +64,7 @@
       <option name="presentableId" value="Default" />
       <updated>1686824903493</updated>
       <workItem from="1686824904632" duration="14000" />
+      <workItem from="1686825522625" duration="61000" />
     </task>
     <servers />
   </component>

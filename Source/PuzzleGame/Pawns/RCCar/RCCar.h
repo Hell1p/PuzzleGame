@@ -48,9 +48,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* RCCarCamera;
 	
-	UPROPERTY(VisibleAnywhere)
-	USkeletalMeshComponent* RCCarMesh;
-
 	APuzzlePlayer* ControllingPlayer;
 	
 	UPROPERTY(VisibleAnywhere)
