@@ -64,7 +64,7 @@ void APuzzlePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	PlayerInputComponent->BindAction(TEXT("GrabRequest"), IE_Pressed, this, &APuzzlePlayer::GrabButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("GrabRequest"), IE_Released, this, &APuzzlePlayer::GrabButtonReleased);
-	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &APuzzlePlayer::Jump);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &APuzzlePlayer::SprintStart);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &APuzzlePlayer::SprintEnd);
 	PlayerInputComponent->BindAction(TEXT("On_OffFlashLight"), IE_Pressed, this, &APuzzlePlayer::FlashlightOn_Off);
@@ -254,6 +254,14 @@ void APuzzlePlayer::InitializePuzzleOverlay()
 			PlayerOverlay = HUD->GetPlayerOverlay();
 		}
 	}
+}
+void APuzzlePlayer::Jump()
+{
+	if (!bBlockingHitR)
+	{
+		Super::Jump();
+	}
+
 }
 
 void APuzzlePlayer::RegenerateStamina(float DeltaTime)

@@ -52,6 +52,8 @@ protected:
 	bool bCrouching;
 	UPROPERTY(BlueprintReadOnly)
 	bool bSprinting;
+	UPROPERTY(BlueprintReadWrite)
+	bool bBlockingHitR;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EMovementDirectionState PlayerMovementDirectionState;
 
@@ -74,6 +76,7 @@ protected:
 	UCameraComponent* PlayerCamera;
 
 private:
+	virtual void Jump() override;
 	void RegenerateStamina(float DeltaTime);
 	void DirectionalMovement();
 	void StartSprintingWhenNeeded();
