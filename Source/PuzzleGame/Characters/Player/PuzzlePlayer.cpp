@@ -72,6 +72,9 @@ void APuzzlePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &APuzzlePlayer::SprintEnd);
 	PlayerInputComponent->BindAction(TEXT("On_OffFlashLight"), IE_Pressed, this, &APuzzlePlayer::FlashlightOn_Off);
 	PlayerInputComponent->BindAction(TEXT("ToggleRCCar"), IE_Pressed, this, &APuzzlePlayer::ToggleRCCar);
+
+	PlayerInputComponent->BindAction(TEXT("SlotSwitch_1"), IE_Pressed, this, &APuzzlePlayer::SlotSwitch_1);
+	PlayerInputComponent->BindAction(TEXT("SlotSwitch_2"), IE_Pressed, this, &APuzzlePlayer::SlotSwitch_2);
 }
 
 void APuzzlePlayer::MoveForward(float Value)
@@ -135,7 +138,8 @@ void APuzzlePlayer::SprintEnd()
 
 void APuzzlePlayer::FlashlightOn_Off()
 {
-	if (Flashlight == nullptr) return;
+	if (Flashlight == nullptr || PlayerToolEquippedState != EPlayerToolEquippedState::EPTES_Flashlight) return;
+	
 	if (!Flashlight->GetbFlashlightTurnedOn())
 	{
 		Flashlight->LightTurnOn();
@@ -286,6 +290,7 @@ void APuzzlePlayer::StaminaBarShow()
 void APuzzlePlayer::InitializeInventoryTools()
 {
 	if (GetWorld() == nullptr) return;
+	
 	/** Flashlight */
 	if (FlashlightClass == nullptr) return;
 	AFlashlight* FlashlightToEquip = GetWorld()->SpawnActor<AFlashlight>(FlashlightClass);
@@ -299,6 +304,7 @@ void APuzzlePlayer::InitializeInventoryTools()
 	if (RCCarToEquip == nullptr) return;
 	RCCar = RCCarToEquip;
 	RCCar->SetOwner(this);
+	RCCar->GetRCControllerMesh()->SetVisibility(false);
 }
 
 void APuzzlePlayer::HandleStamina(float DeltaTime)
@@ -321,7 +327,7 @@ void APuzzlePlayer::HandleStamina(float DeltaTime)
 
 void APuzzlePlayer::ToggleRCCar()
 {
-	if (RCCar == nullptr) return;
+	if (RCCar == nullptr || PlayerToolEquippedState != EPlayerToolEquippedState::EPTES_RCCar) return;
 	
 	PuzzlePlayerController = PuzzlePlayerController == nullptr ? Cast<APuzzlePlayerController>(Controller) : PuzzlePlayerController;
 	if (PuzzlePlayerController == nullptr) return;
@@ -351,4 +357,31 @@ void APuzzlePlayer::RotateGrabbedObject_Left(float Value)
 	FVector PrevLocation;
 	PhysicsHandle->GetTargetLocationAndRotation(PrevLocation, PrevRotation);
 	PhysicsHandle->SetTargetRotation(FRotator(PrevRotation.Pitch, --PrevRotation.Yaw, PrevRotation.Roll));
+}
+
+void APuzzlePlayer::SlotSwitch_1() // Flashlight
+{
+	if (Flashlight == nullptr) return;
+
+	if (RCCar && PlayerToolEquippedState == EPlayerToolEquippedState::EPTES_RCCar)
+	{
+		RCCar->GetRCControllerMesh()->SetVisibility(false);
+	}
+	PlayerToolEquippedState = EPlayerToolEquippedState::EPTES_Flashlight;
+	Flashlight->GetFlashlightMesh()->SetVisibility(true);
+	if (bPrevLightTurnedOn) Flashlight->LightTurnOn();
+}
+
+void APuzzlePlayer::SlotSwitch_2() // RCCar
+{
+	if (RCCar == nullptr) return;
+
+	if (Flashlight && PlayerToolEquippedState == EPlayerToolEquippedState::EPTES_Flashlight)
+	{
+		bPrevLightTurnedOn = Flashlight->GetbFlashlightTurnedOn();
+		Flashlight->LightTurnOff();
+		Flashlight->GetFlashlightMesh()->SetVisibility(false);
+	}
+	PlayerToolEquippedState = EPlayerToolEquippedState::EPTES_RCCar;
+	RCCar->GetRCControllerMesh()->SetVisibility(true);
 }

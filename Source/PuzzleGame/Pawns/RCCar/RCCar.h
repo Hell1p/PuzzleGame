@@ -52,4 +52,7 @@ private:
 	
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* RCControllerMesh;
+
+public:
+	UStaticMeshComponent* GetRCControllerMesh() const { return RCControllerMesh; }
 };

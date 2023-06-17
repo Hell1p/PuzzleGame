@@ -21,7 +21,16 @@ enum class EMovementDirectionState : uint8
 	EMDS_Left_Right UMETA(DisplayName = "Left_Right"),
 	EMDS_Backward UMETA(DisplayName = "Backward"),
 
-	EMDS_MAX UMETA(DisplayName = "DefaultMAX")
+	EMDS_MAX UMETA(DisplayName = "DefaultMAX")=
+};
+
+UENUM(BlueprintType)
+enum class EPlayerToolEquippedState : uint8
+{
+	EPTES_Flashlight UMETA(DisplayName = "Flashlight"), // First slot
+	EPTES_RCCar UMETA(DisplayName = "RCCar"), // Second slot
+
+	EPTES_MAX UMETA(DisplayName = "DefaultMAX")=
 };
 
 UCLASS()
@@ -55,9 +64,14 @@ protected:
 	bool bCrouching;
 	UPROPERTY(BlueprintReadOnly)
 	bool bSprinting;
+	UPROPERTY(BlueprintReadWrite)
+	bool bBlockingHit;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EMovementDirectionState PlayerMovementDirectionState;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EPlayerToolEquippedState PlayerToolEquippedState;
+	
 	UPROPERTY(EditAnywhere, Category = Movement, BlueprintReadOnly)
 	float SprintingSpeed = 600.f;
 	UPROPERTY(EditAnywhere, Category = Movement, BlueprintReadOnly)
@@ -89,7 +103,10 @@ private:
 	void UseStamina(float StaminaCost);
 	
 	void ToggleRCCar();
+	void SlotSwitch_1(); // Flashlight
+	void SlotSwitch_2(); // RCCar
 
+	bool bPrevLightTurnedOn;
 	APuzzlePlayerController* PuzzlePlayerController;
 	float RegenDeltaTime;
 	bool bWantsToSprint;
