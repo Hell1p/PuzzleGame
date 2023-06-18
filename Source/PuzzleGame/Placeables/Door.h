@@ -21,9 +21,6 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY(VisibleAnywhere)
-	USkeletalMeshComponent* DoorMesh;
-	
 	UPROPERTY(EditInstanceOnly, Category = DoorProperties)
 	ACubeButton* Button;
 	

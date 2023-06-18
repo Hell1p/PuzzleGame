@@ -303,7 +303,7 @@ void APuzzlePlayer::InitializeInventoryTools()
 	Flashlight = FlashlightToEquip;
 	Flashlight->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("S_Flashlight"));
 
-	/** RCCar */
+	/** RCCar */ //сасі
 	if (RCCarClass == nullptr) return;
 	ARCCar* RCCarToEquip = GetWorld()->SpawnActor<ARCCar>(RCCarClass);
 	if (RCCarToEquip == nullptr) return;
