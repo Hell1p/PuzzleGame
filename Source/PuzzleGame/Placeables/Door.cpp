@@ -8,8 +8,6 @@ ADoor::ADoor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	DoorMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("DoorMesh"));
-	SetRootComponent(DoorMesh);
 }
 
 void ADoor::BeginPlay()
@@ -20,10 +18,11 @@ void ADoor::BeginPlay()
 void ADoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+/*
 	if (Button && Button->GetbCubePlaced())
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Emerald, TEXT("DoorOpens"));
 	}
+	*/
 }
 
