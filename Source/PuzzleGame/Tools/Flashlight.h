@@ -36,4 +36,5 @@ private:
 public:
 	bool GetbFlashlightTurnedOn() const { return bFlashlightTurnedOn; }
 	void SetbFlashlightTurnedOn(bool bTurnedOn) { bFlashlightTurnedOn = bTurnedOn; }
+	USkeletalMeshComponent* GetFlashlightMesh() const { return FlashlightMesh; }
 };
