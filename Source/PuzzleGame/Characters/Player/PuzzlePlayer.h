@@ -63,8 +63,6 @@ protected:
 	bool bSprinting;
 	UPROPERTY(BlueprintReadWrite)
 	bool bBlockingHit;
-	UPROPERTY(BlueprintReadWrite)
-	bool bBlockingHitR;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EMovementDirectionState PlayerMovementDirectionState;
@@ -108,20 +106,14 @@ private:
 	void SlotSwitch_2(); // RCCar
 
 	bool bPrevLightTurnedOn;
-	UPROPERTY(VisibleAnywhere)
 	APuzzlePlayerController* PuzzlePlayerController;
 	float RegenDeltaTime;
 	bool bWantsToSprint;
 	FTimerHandle StaminaRegenTimer;
 	float AO_Pitch;
 	FRotator StartingAimRotation;
-	
-	UPROPERTY(VisibleAnywhere)
 	APlayerController* PlayerController;
-	
-	UPROPERTY(VisibleAnywhere)
 	APuzzleHUD* HUD;
-	UPROPERTY(VisibleAnywhere)
 	UPlayerOverlay* PlayerOverlay;
 	bool bGrabbingObject;
 	bool StaminaBarHidden;
@@ -130,12 +122,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	TSubclassOf<ARCCar> RCCarClass;
-	UPROPERTY(VisibleAnywhere)
 	ARCCar* RCCar;
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	TSubclassOf<AFlashlight> FlashlightClass;
-	UPROPERTY(VisibleAnywhere)
 	AFlashlight* Flashlight;
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)

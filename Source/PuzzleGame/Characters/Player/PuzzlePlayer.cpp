@@ -1,8 +1,4 @@
 #include "PuzzlePlayer.h"
-#include "KismetAnimationLibrary.h"
-#include "Math/Vector.h"
-#include "Math/Matrix.h"
-#include "Math/Rotator.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -46,9 +42,10 @@ void APuzzlePlayer::Tick(float DeltaTime)
 	{
 		PhysicsHandle->SetTargetLocation(PlayerCamera->GetForwardVector() * GrabDistance + PlayerCamera->GetComponentLocation());
 	}
-	DirectionalMovement();
-	StartSprintingWhenNeeded();
+	
 	HandleStamina(DeltaTime);
+	StartSprintingWhenNeeded();
+	DirectionalMovement();
 	SetSprintingFOV(DeltaTime);
 	SetGrabbedObjectLocation();
 	InteractCrosshair();
@@ -88,7 +85,7 @@ void APuzzlePlayer::MoveForward(float Value)
 	}
 }
 
-void APuzzlePlayer::MoveRight(float Value) 
+void APuzzlePlayer::MoveRight(float Value)
 {
 	if (Controller && (Value != 0))
 	{
@@ -202,13 +199,8 @@ void APuzzlePlayer::DirectionalMovement()
 {
 	FVector Velocity = GetVelocity();
 	FRotator Rotation = GetActorRotation();
+	float Direction = GetMesh()->GetAnimInstance()->CalculateDirection(Velocity, Rotation);
 	
-	FMatrix rotationMatrix = FRotationMatrix(Rotation);
-	//FVector forwardVector = rotationMatrix.GetUnitAxis(EAxis::X);
-	//float Direction = FVector::DotProduct(Velocity.GetSafeNormal(), forwardVector);
-	
-	const float Direction = GetMesh()->GetAnimInstance()->CalculateDirection(Velocity, Rotation);
-    //float Direction = UKismetAnimationLibrary::CalculateDirection(Velocity, Rotation);
 	if (Direction >= -50.f && Direction <= 50.f && !bSprinting && !bCrouching)
 	{
 		PlayerMovementDirectionState = EMovementDirectionState::EMDS_Forward;
