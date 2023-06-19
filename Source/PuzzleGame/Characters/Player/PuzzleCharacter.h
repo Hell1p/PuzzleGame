@@ -1,8 +1,10 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "PuzzlePlayer.generated.h"
+#include "PuzzleCharacter.generated.h"
 
 class UCameraComponent;
 class UPhysicsHandleComponent;
@@ -15,7 +17,7 @@ class UPlayerOverlay;
 class APuzzlePlayerController;
 
 UENUM(BlueprintType)
-enum class EMovementDirectionState : uint8
+enum class EMovementDirectionState1 : uint8
 {
 	EMDS_Forward UMETA(DisplayName = "Forward"),
 	EMDS_Left_Right UMETA(DisplayName = "Left_Right"),
@@ -25,7 +27,7 @@ enum class EMovementDirectionState : uint8
 };
 
 UENUM(BlueprintType)
-enum class EPlayerToolEquippedState : uint8
+enum class EPlayerToolEquippedState1 : uint8
 {
 	EPTES_Flashlight UMETA(DisplayName = "Flashlight"), // First slot
 	EPTES_RCCar UMETA(DisplayName = "RCCar"), // Second slot
@@ -34,18 +36,16 @@ enum class EPlayerToolEquippedState : uint8
 };
 
 UCLASS()
-class PUZZLEGAME_API APuzzlePlayer : public ACharacter
+class PUZZLEGAME_API APuzzleCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	APuzzlePlayer();
+	virtual void BeginPlay() override;
+	APuzzleCharacter();
+	void HandleStamina(float DeltaTime);
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-protected:
-	virtual void BeginPlay() override;
-	void HandleStamina(float DeltaTime);
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void LookUp(float Value);
@@ -67,9 +67,9 @@ protected:
 	bool bBlockingHitR;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	EMovementDirectionState PlayerMovementDirectionState;
+	EMovementDirectionState1 PlayerMovementDirectionState;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	EPlayerToolEquippedState PlayerToolEquippedState;
+	EPlayerToolEquippedState1 PlayerToolEquippedState;
 	
 	UPROPERTY(EditAnywhere, Category = Movement, BlueprintReadOnly)
 	float SprintingSpeed = 600.f;

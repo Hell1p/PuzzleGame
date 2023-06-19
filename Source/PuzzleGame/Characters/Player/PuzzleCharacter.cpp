@@ -1,4 +1,4 @@
-#include "PuzzlePlayer.h"
+#include "PuzzleCharacter.h"
 #include "KismetAnimationLibrary.h"
 #include "Math/Vector.h"
 #include "Math/Matrix.h"
@@ -13,8 +13,7 @@
 #include "PuzzleGame/Pawns/RCCar/RCCar.h"
 #include "PuzzleGame/Tools/Flashlight.h"
 #include "PuzzleGame/PlayerController/PuzzlePlayerController.h"
-
-APuzzlePlayer::APuzzlePlayer()
+APuzzleCharacter::APuzzleCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -26,7 +25,7 @@ APuzzlePlayer::APuzzlePlayer()
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
 }
 
-void APuzzlePlayer::BeginPlay()
+void APuzzleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	if (GetMesh()) GetMesh()->SetVisibility(false);
@@ -38,7 +37,7 @@ void APuzzlePlayer::BeginPlay()
 	StaminaBarHidden = true;
 }
 
-void APuzzlePlayer::Tick(float DeltaTime)
+void APuzzleCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
@@ -54,30 +53,30 @@ void APuzzlePlayer::Tick(float DeltaTime)
 	InteractCrosshair();
 }
 
-void APuzzlePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void APuzzleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
-	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &APuzzlePlayer::MoveForward);
-	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &APuzzlePlayer::MoveRight);
-	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APuzzlePlayer::LookUp);
-	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &APuzzlePlayer::Turn);
-	PlayerInputComponent->BindAxis(TEXT("RotateGrabbedObject_Right"), this, &APuzzlePlayer::RotateGrabbedObject_Right);
-	PlayerInputComponent->BindAxis(TEXT("RotateGrabbedObject_Left"), this, &APuzzlePlayer::RotateGrabbedObject_Left);
+	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &APuzzleCharacter::MoveForward);
+	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &APuzzleCharacter::MoveRight);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APuzzleCharacter::LookUp);
+	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &APuzzleCharacter::Turn);
 
-	PlayerInputComponent->BindAction(TEXT("GrabRequest"), IE_Pressed, this, &APuzzlePlayer::GrabButtonPressed);
-	PlayerInputComponent->BindAction(TEXT("GrabRequest"), IE_Released, this, &APuzzlePlayer::GrabButtonReleased);
-	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &APuzzlePlayer::Jump);
-	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &APuzzlePlayer::SprintStart);
-	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &APuzzlePlayer::SprintEnd);
-	PlayerInputComponent->BindAction(TEXT("On_OffFlashLight"), IE_Pressed, this, &APuzzlePlayer::FlashlightOn_Off);
-	PlayerInputComponent->BindAction(TEXT("ToggleRCCar"), IE_Pressed, this, &APuzzlePlayer::ToggleRCCar);
+	PlayerInputComponent->BindAxis(TEXT("RotateGrabbedObject_Right"), this, &APuzzleCharacter::RotateGrabbedObject_Right);
+	PlayerInputComponent->BindAxis(TEXT("RotateGrabbedObject_Left"), this, &APuzzleCharacter::RotateGrabbedObject_Left);
 
-	PlayerInputComponent->BindAction(TEXT("SlotSwitch_1"), IE_Pressed, this, &APuzzlePlayer::SlotSwitch_1);
-	PlayerInputComponent->BindAction(TEXT("SlotSwitch_2"), IE_Pressed, this, &APuzzlePlayer::SlotSwitch_2);
+	PlayerInputComponent->BindAction(TEXT("GrabRequest"), IE_Pressed, this, &APuzzleCharacter::GrabButtonPressed);
+	PlayerInputComponent->BindAction(TEXT("GrabRequest"), IE_Released, this, &APuzzleCharacter::GrabButtonReleased);
+	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &APuzzleCharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &APuzzleCharacter::SprintStart);
+	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &APuzzleCharacter::SprintEnd);
+	PlayerInputComponent->BindAction(TEXT("On_OffFlashLight"), IE_Pressed, this, &APuzzleCharacter::FlashlightOn_Off);
+	PlayerInputComponent->BindAction(TEXT("ToggleRCCar"), IE_Pressed, this, &APuzzleCharacter::ToggleRCCar);
+
+	PlayerInputComponent->BindAction(TEXT("SlotSwitch_1"), IE_Pressed, this, &APuzzleCharacter::SlotSwitch_1);
+	PlayerInputComponent->BindAction(TEXT("SlotSwitch_2"), IE_Pressed, this, &APuzzleCharacter::SlotSwitch_2);
 }
 
-void APuzzlePlayer::MoveForward(float Value)
+void APuzzleCharacter::MoveForward(float Value)
 {
 	if (Controller && (Value != 0))
 	{
@@ -88,7 +87,7 @@ void APuzzlePlayer::MoveForward(float Value)
 	}
 }
 
-void APuzzlePlayer::MoveRight(float Value) 
+void APuzzleCharacter::MoveRight(float Value)
 {
 	if (Controller && (Value != 0))
 	{
@@ -99,17 +98,16 @@ void APuzzlePlayer::MoveRight(float Value)
 	}
 }
 
-void APuzzlePlayer::LookUp(float Value)
+void APuzzleCharacter::LookUp(float Value)
 {
 	AddControllerPitchInput(Value);
 }
 
-void APuzzlePlayer::Turn(float Value)
+void APuzzleCharacter::Turn(float Value)
 {
 	AddControllerYawInput(Value);
 }
-
-void APuzzlePlayer::SprintStart()
+void APuzzleCharacter::SprintStart()
 {
 	if (CurrentStamina < SprintCost) return;
 	FVector Velocity = GetVelocity();
@@ -122,23 +120,23 @@ void APuzzlePlayer::SprintStart()
 	else if (Velocity.Size() > 0.f) StaminaBarShow();
 
 	if (bCrouching) bWantsToSprint = true;
-	if (PlayerMovementDirectionState == EMovementDirectionState::EMDS_Backward) bWantsToSprint = true;
+	if (PlayerMovementDirectionState == EMovementDirectionState1::EMDS_Backward) bWantsToSprint = true;
 	if (!bCrouching)
 	{
 		bSprinting = true;
 		GetCharacterMovement()->MaxWalkSpeed = SprintingSpeed;
 	}
 }
-void APuzzlePlayer::SprintEnd()
+void APuzzleCharacter::SprintEnd()
 {
 	bWantsToSprint = false;
 	bSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
 }
 
-void APuzzlePlayer::FlashlightOn_Off()
+void APuzzleCharacter::FlashlightOn_Off()
 {
-	if (Flashlight == nullptr || PlayerToolEquippedState != EPlayerToolEquippedState::EPTES_Flashlight) return;
+	if (Flashlight == nullptr || PlayerToolEquippedState != EPlayerToolEquippedState1::EPTES_Flashlight) return;
 	
 	if (!Flashlight->GetbFlashlightTurnedOn())
 	{
@@ -152,7 +150,7 @@ void APuzzlePlayer::FlashlightOn_Off()
 	}
 }
 
-void APuzzlePlayer::SetSprintingFOV(float DeltaTime)
+void APuzzleCharacter::SetSprintingFOV(float DeltaTime)
 {
 	FVector Velocity = GetVelocity();
 	Velocity.Z = 0.f;
@@ -170,7 +168,7 @@ void APuzzlePlayer::SetSprintingFOV(float DeltaTime)
 	}
 }
 
-void APuzzlePlayer::GrabButtonPressed()
+void APuzzleCharacter::GrabButtonPressed()
 {
 	if (GetWorld() == nullptr) return;
 
@@ -181,7 +179,7 @@ void APuzzlePlayer::GrabButtonPressed()
 	bGrabbingObject = true;
 }
 
-void APuzzlePlayer::GrabButtonReleased()
+void APuzzleCharacter::GrabButtonReleased()
 {
 	if (bGrabbingObject)
 	{
@@ -190,7 +188,7 @@ void APuzzlePlayer::GrabButtonReleased()
 	}
 }
 
-void APuzzlePlayer::SetGrabbedObjectLocation()
+void APuzzleCharacter::SetGrabbedObjectLocation()
 {
 	if (bGrabbingObject)
 	{
@@ -198,7 +196,7 @@ void APuzzlePlayer::SetGrabbedObjectLocation()
 	}
 }
 
-void APuzzlePlayer::DirectionalMovement()
+void APuzzleCharacter::DirectionalMovement()
 {
 	FVector Velocity = GetVelocity();
 	FRotator Rotation = GetActorRotation();
@@ -211,12 +209,12 @@ void APuzzlePlayer::DirectionalMovement()
     //float Direction = UKismetAnimationLibrary::CalculateDirection(Velocity, Rotation);
 	if (Direction >= -50.f && Direction <= 50.f && !bSprinting && !bCrouching)
 	{
-		PlayerMovementDirectionState = EMovementDirectionState::EMDS_Forward;
+		PlayerMovementDirectionState = EMovementDirectionState1::EMDS_Forward;
 		GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
 	}
 	if ((Direction <= 90.f && Direction > 50.f) || (Direction >= -90.f && Direction < -50.f) && !bSprinting && !bCrouching)
 	{
-		PlayerMovementDirectionState = EMovementDirectionState::EMDS_Left_Right;
+		PlayerMovementDirectionState = EMovementDirectionState1::EMDS_Left_Right;
 		GetCharacterMovement()->MaxWalkSpeed = MaxSpeedL_R;
 	}
 	if ((Direction < -90.f && Direction >= -180.f) || (Direction > 90.f && Direction <= 180.f))
@@ -226,23 +224,24 @@ void APuzzlePlayer::DirectionalMovement()
 			bWantsToSprint = true;
 			bSprinting = false;
 		}
-		PlayerMovementDirectionState = EMovementDirectionState::EMDS_Backward;
+		PlayerMovementDirectionState = EMovementDirectionState1::EMDS_Backward;
 		GetCharacterMovement()->MaxWalkSpeed = MaxSpeedBwd;
 	}
 }
 
-void APuzzlePlayer::StartSprintingWhenNeeded()
+void APuzzleCharacter::StartSprintingWhenNeeded()
 {
-	if ((!bCrouching && bWantsToSprint) || (PlayerMovementDirectionState != EMovementDirectionState::EMDS_Backward && bWantsToSprint)) SprintStart();
+	if ((!bCrouching && bWantsToSprint) || (PlayerMovementDirectionState != EMovementDirectionState1::EMDS_Backward && bWantsToSprint)) SprintStart();
 }
 
-void APuzzlePlayer::InteractCrosshair()
+void APuzzleCharacter::InteractCrosshair()
 {
 	PlayerController = PlayerController == nullptr ? Cast<APlayerController>(Controller) : PlayerController;
 	if (PlayerController) HUD = HUD == nullptr ? Cast<APuzzleHUD>(PlayerController->GetHUD()) : HUD;
 	if (HUD == nullptr) return;
 
 	FHitResult HitResult;
+	if (GetWorld()) return;
 	GetWorld()->LineTraceSingleByChannel(HitResult, PlayerCamera->GetComponentLocation(), PlayerCamera->GetForwardVector() * GrabDistance + PlayerCamera->GetComponentLocation(), ECollisionChannel::ECC_Visibility);
 	if (!HitResult.bBlockingHit) HUD->HideInteractCrosshair();
 	if (!HitResult.bBlockingHit) return;
@@ -250,12 +249,12 @@ void APuzzlePlayer::InteractCrosshair()
 	else HUD->HideInteractCrosshair();
 }
 
-void APuzzlePlayer::UseStamina(float StaminaCost)
+void APuzzleCharacter::UseStamina(float StaminaCost)
 {
 	CurrentStamina = FMath::Clamp(CurrentStamina - StaminaCost, 0.f, MaxStamina);
 }
 
-void APuzzlePlayer::InitializePuzzleOverlay()
+void APuzzleCharacter::InitializePuzzleOverlay()
 {
 	PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController)
@@ -267,7 +266,7 @@ void APuzzlePlayer::InitializePuzzleOverlay()
 		}
 	}
 }
-void APuzzlePlayer::Jump()
+void APuzzleCharacter::Jump()
 {
 	if (!bBlockingHitR)
 	{
@@ -276,13 +275,13 @@ void APuzzlePlayer::Jump()
 
 }
 
-void APuzzlePlayer::RegenerateStamina(float DeltaTime)
+void APuzzleCharacter::RegenerateStamina(float DeltaTime)
 {
 	CurrentStamina = FMath::Clamp(CurrentStamina + StaminaRegenRate * DeltaTime, 0.f, MaxStamina);
 	if (HUD) HUD->SetStaminaBarPercent(CurrentStamina / MaxStamina);
 }
 
-void APuzzlePlayer::StaminaBarHide()
+void APuzzleCharacter::StaminaBarHide()
 {
 	if (HUD)
 	{
@@ -291,7 +290,7 @@ void APuzzlePlayer::StaminaBarHide()
 	}
 }
 
-void APuzzlePlayer::StaminaBarShow()
+void APuzzleCharacter::StaminaBarShow()
 {
 	if (HUD)
 	{
@@ -300,7 +299,7 @@ void APuzzlePlayer::StaminaBarShow()
 	}
 }
 
-void APuzzlePlayer::InitializeInventoryTools()
+void APuzzleCharacter::InitializeInventoryTools()
 {
 	if (GetWorld() == nullptr) return;
 	
@@ -320,7 +319,7 @@ void APuzzlePlayer::InitializeInventoryTools()
 	RCCar->GetRCControllerMesh()->SetVisibility(false);
 }
 
-void APuzzlePlayer::HandleStamina(float DeltaTime)
+void APuzzleCharacter::HandleStamina(float DeltaTime)
 {
 	FVector Velocity = GetVelocity();
 	Velocity.Z = 0.f;
@@ -338,23 +337,23 @@ void APuzzlePlayer::HandleStamina(float DeltaTime)
 	}
 }
 
-void APuzzlePlayer::ToggleRCCar()
+void APuzzleCharacter::ToggleRCCar()
 {
-	if (RCCar == nullptr || PlayerToolEquippedState != EPlayerToolEquippedState::EPTES_RCCar) return;
+	if (RCCar == nullptr || PlayerToolEquippedState != EPlayerToolEquippedState1::EPTES_RCCar) return;
 	
 	PuzzlePlayerController = PuzzlePlayerController == nullptr ? Cast<APuzzlePlayerController>(Controller) : PuzzlePlayerController;
 	if (PuzzlePlayerController == nullptr) return;
 	GetMovementComponent()->StopMovementImmediately();
-	RCCar->Activate(this, PuzzlePlayerController);
+	//RCCar->Activate(this, PuzzlePlayerController);
 }
 
-APuzzlePlayerController* APuzzlePlayer::GetPuzzlePlayerController()
+APuzzlePlayerController* APuzzleCharacter::GetPuzzlePlayerController()
 {
 	PuzzlePlayerController = PuzzlePlayerController == nullptr ? Cast<APuzzlePlayerController>(Controller) : PuzzlePlayerController;
 	return PuzzlePlayerController;
 }
 
-void APuzzlePlayer::RotateGrabbedObject_Right(float Value)
+void APuzzleCharacter::RotateGrabbedObject_Right(float Value)
 {
 	if (Value == 0.f) return;
 	FRotator PrevRotation;
@@ -363,7 +362,7 @@ void APuzzlePlayer::RotateGrabbedObject_Right(float Value)
 	PhysicsHandle->SetTargetRotation(FRotator(PrevRotation.Pitch, ++PrevRotation.Yaw, PrevRotation.Roll));
 }
 
-void APuzzlePlayer::RotateGrabbedObject_Left(float Value)
+void APuzzleCharacter::RotateGrabbedObject_Left(float Value)
 {
 	if (Value == 0.f) return;
 	FRotator PrevRotation;
@@ -372,29 +371,30 @@ void APuzzlePlayer::RotateGrabbedObject_Left(float Value)
 	PhysicsHandle->SetTargetRotation(FRotator(PrevRotation.Pitch, --PrevRotation.Yaw, PrevRotation.Roll));
 }
 
-void APuzzlePlayer::SlotSwitch_1() // Flashlight
+void APuzzleCharacter::SlotSwitch_1() // Flashlight
 {
 	if (Flashlight == nullptr) return;
 
-	if (RCCar && PlayerToolEquippedState == EPlayerToolEquippedState::EPTES_RCCar)
+	if (RCCar && PlayerToolEquippedState == EPlayerToolEquippedState1::EPTES_RCCar)
 	{
 		RCCar->GetRCControllerMesh()->SetVisibility(false);
 	}
-	PlayerToolEquippedState = EPlayerToolEquippedState::EPTES_Flashlight;
+	PlayerToolEquippedState = EPlayerToolEquippedState1::EPTES_Flashlight;
 	Flashlight->GetFlashlightMesh()->SetVisibility(true);
 	if (bPrevLightTurnedOn) Flashlight->LightTurnOn();
 }
 
-void APuzzlePlayer::SlotSwitch_2() // RCCar
+void APuzzleCharacter::SlotSwitch_2() // RCCar
 {
 	if (RCCar == nullptr) return;
 
-	if (Flashlight && PlayerToolEquippedState == EPlayerToolEquippedState::EPTES_Flashlight)
+	if (Flashlight && PlayerToolEquippedState == EPlayerToolEquippedState1::EPTES_Flashlight)
 	{
 		bPrevLightTurnedOn = Flashlight->GetbFlashlightTurnedOn();
 		Flashlight->LightTurnOff();
 		Flashlight->GetFlashlightMesh()->SetVisibility(false);
 	}
-	PlayerToolEquippedState = EPlayerToolEquippedState::EPTES_RCCar;
+	PlayerToolEquippedState = EPlayerToolEquippedState1::EPTES_RCCar;
 	RCCar->GetRCControllerMesh()->SetVisibility(true);
 }
+
