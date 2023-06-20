@@ -4,7 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "Screwdriver.generated.h"
 
-class USphereComponent;
+class UBoxComponent;
 
 UCLASS()
 class PUZZLEGAME_API AScrewdriver : public AActor
@@ -17,12 +17,16 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	virtual void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	UFUNCTION()
+	virtual void OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
 private:
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* StaticMesh;
+	UStaticMeshComponent* ScrewdriverMesh;
 	
 	UPROPERTY(VisibleAnywhere)
-	USphereComponent* SphereComponent;
-	
+	UBoxComponent* BoxCollision;
 };

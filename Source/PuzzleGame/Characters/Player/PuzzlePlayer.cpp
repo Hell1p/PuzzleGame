@@ -269,6 +269,14 @@ void APuzzlePlayer::Jump()
 
 }
 
+void APuzzlePlayer::Jump()
+{
+	if (!bBlockingHitR)
+	{
+		Super::Jump();
+	}
+}
+
 void APuzzlePlayer::RegenerateStamina(float DeltaTime)
 {
 	CurrentStamina = FMath::Clamp(CurrentStamina + StaminaRegenRate * DeltaTime, 0.f, MaxStamina);

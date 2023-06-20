@@ -59,12 +59,13 @@ protected:
 	void GrabButtonReleased();
 	void SprintStart();
 	void SprintEnd();
-
+	void FlashlightOn_Off();
+	virtual void Jump() override;
+	
 	UPROPERTY(BlueprintReadWrite)
 	bool bCrouching;
 	UPROPERTY(BlueprintReadOnly)
 	bool bSprinting;
-	UPROPERTY(BlueprintReadWrite)
 	bool bBlockingHit;
 	UPROPERTY(BlueprintReadWrite)
 	bool bBlockingHitR;
@@ -95,7 +96,6 @@ protected:
 	USpringArmComponent* SpringArmComponent;
 
 private:
-	virtual void Jump() override;
 	void RegenerateStamina(float DeltaTime);
 	void DirectionalMovement();
 	void StartSprintingWhenNeeded();
@@ -107,7 +107,6 @@ private:
 	void StaminaBarShow();
 	void UseStamina(float StaminaCost);
 	void InitializeInventoryTools();
-	void FlashlightOn_Off();
 	void ToggleRCCar();
 	void SlotSwitch_1(); // Flashlight
 	void SlotSwitch_2(); // RCCar
