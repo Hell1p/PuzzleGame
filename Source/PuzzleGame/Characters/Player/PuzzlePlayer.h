@@ -21,7 +21,7 @@ enum class EMovementDirectionState : uint8
 	EMDS_Left_Right UMETA(DisplayName = "Left_Right"),
 	EMDS_Backward UMETA(DisplayName = "Backward"),
 
-	EMDS_MAX UMETA(DisplayName = "DefaultMAX")=
+	EMDS_MAX UMETA(DisplayName = "DefaultMAX")
 };
 
 UENUM(BlueprintType)
@@ -30,7 +30,7 @@ enum class EPlayerToolEquippedState : uint8
 	EPTES_Flashlight UMETA(DisplayName = "Flashlight"), // First slot
 	EPTES_RCCar UMETA(DisplayName = "RCCar"), // Second slot
 
-	EPTES_MAX UMETA(DisplayName = "DefaultMAX")=
+	EPTES_MAX UMETA(DisplayName = "DefaultMAX")
 };
 
 UCLASS()
@@ -58,13 +58,14 @@ protected:
 	void SprintStart();
 	void SprintEnd();
 	void FlashlightOn_Off();
-	void FlashlightOff();
+	virtual void Jump() override;
 	
 	UPROPERTY(BlueprintReadWrite)
 	bool bCrouching;
 	UPROPERTY(BlueprintReadOnly)
 	bool bSprinting;
 	UPROPERTY(BlueprintReadWrite)
+	bool bBlockingHitR;
 	bool bBlockingHit;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
