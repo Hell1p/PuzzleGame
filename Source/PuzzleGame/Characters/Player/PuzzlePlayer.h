@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "PuzzlePlayer.generated.h"
 
+class USpringArmComponent;
 class UCameraComponent;
 class UPhysicsHandleComponent;
 class APlayerController;
@@ -27,8 +28,10 @@ enum class EMovementDirectionState : uint8
 UENUM(BlueprintType)
 enum class EPlayerToolEquippedState : uint8
 {
-	EPTES_Flashlight UMETA(DisplayName = "Flashlight"), // First slot
-	EPTES_RCCar UMETA(DisplayName = "RCCar"), // Second slot
+	EPTES_Flashlight UMETA(DisplayName = "Flashlight"),
+	// First slot
+	EPTES_RCCar UMETA(DisplayName = "RCCar"),
+	// Second slot
 
 	EPTES_MAX UMETA(DisplayName = "DefaultMAX")
 };
@@ -56,19 +59,20 @@ protected:
 	void GrabButtonReleased();
 	void SprintStart();
 	void SprintEnd();
- 
+
 	UPROPERTY(BlueprintReadWrite)
 	bool bCrouching;
 	UPROPERTY(BlueprintReadOnly)
 	bool bSprinting;
 	UPROPERTY(BlueprintReadWrite)
 	bool bBlockingHit;
-	
+	UPROPERTY(BlueprintReadWrite)
+	bool bBlockingHitR;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EMovementDirectionState PlayerMovementDirectionState;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EPlayerToolEquippedState PlayerToolEquippedState;
-	
+
 	UPROPERTY(EditAnywhere, Category = Movement, BlueprintReadOnly)
 	float SprintingSpeed = 600.f;
 	UPROPERTY(EditAnywhere, Category = Movement, BlueprintReadOnly)
@@ -77,15 +81,18 @@ protected:
 	float MaxSpeedL_R = 475.f;
 	UPROPERTY(EditAnywhere, Category = Movement, BlueprintReadOnly)
 	float MaxSpeedBwd = 435.f;
- 
+
 	UPROPERTY(EditAnywhere, Category = Movement, BlueprintReadOnly)
 	float SprintFOV = 110.f;
 	UPROPERTY(EditAnywhere, Category = Movement, BlueprintReadOnly)
 	float DefaultFOV = 90.f;
 	float CurrentFOV;
- 
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UCameraComponent* PlayerCamera;
+
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* SpringArmComponent;
 
 private:
 	virtual void Jump() override;
@@ -106,14 +113,18 @@ private:
 	void SlotSwitch_2(); // RCCar
 
 	bool bPrevLightTurnedOn;
+	UPROPERTY(VisibleAnywhere)
 	APuzzlePlayerController* PuzzlePlayerController;
 	float RegenDeltaTime;
 	bool bWantsToSprint;
 	FTimerHandle StaminaRegenTimer;
 	float AO_Pitch;
 	FRotator StartingAimRotation;
+	UPROPERTY(VisibleAnywhere)
 	APlayerController* PlayerController;
+	UPROPERTY(VisibleAnywhere)
 	APuzzleHUD* HUD;
+	UPROPERTY(VisibleAnywhere)
 	UPlayerOverlay* PlayerOverlay;
 	bool bGrabbingObject;
 	bool StaminaBarHidden;
@@ -122,10 +133,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	TSubclassOf<ARCCar> RCCarClass;
+	UPROPERTY(VisibleAnywhere)
 	ARCCar* RCCar;
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	TSubclassOf<AFlashlight> FlashlightClass;
+	UPROPERTY(VisibleAnywhere)
 	AFlashlight* Flashlight;
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
@@ -133,19 +146,19 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float SprintCost = 0.25f;
-	
+
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float MaxStamina = 100.f;
 
-	 UPROPERTY(EditAnywhere, Category = PlayerStats)
+	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float StaminaRegenRate = 5.f;
- 
+
 	UPROPERTY(VisibleAnywhere, Category = PlayerStats)
 	float CurrentStamina;
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float StaminaBar_Hide_ShowDelay = 10.f;
-	
+
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsHandleComponent* PhysicsHandle;
 

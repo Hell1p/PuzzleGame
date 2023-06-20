@@ -4,6 +4,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/ProgressBar.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "PuzzleGame/HUD/PlayerOverlay.h"
 #include "PuzzleGame/HUD/PuzzleHUD.h"
 #include "PuzzleGame/Pawns/RCCar/RCCar.h"
@@ -16,9 +17,9 @@ APuzzlePlayer::APuzzlePlayer()
 
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	PlayerCamera->SetupAttachment(RootComponent);
-
-	GetMesh()->SetupAttachment(PlayerCamera);
-	
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
+	SpringArmComponent->SetupAttachment(PlayerCamera);
+	GetMesh()->SetupAttachment(SpringArmComponent);
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
 }
 
