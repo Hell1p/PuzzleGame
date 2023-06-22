@@ -20,4 +20,6 @@ void UPuzzleAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	if (PuzzlePlayer == nullptr) PuzzlePlayer = Cast<APuzzlePlayer>(TryGetPawnOwner());
 	if (PuzzlePlayer == nullptr) return;
 
+	Speed = PuzzlePlayer->GetVelocity().Size();
+	bIsCrouching = PuzzlePlayer->GetbCrouching();
 }

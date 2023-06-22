@@ -7,13 +7,14 @@
 #include "Ventilation.generated.h"
 
 class AScrew;
+class UPhysicsConstraintComponent;
 
 UCLASS()
 class PUZZLEGAME_API AVentilation : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
+public:
 	AVentilation();
 	virtual void Tick(float DeltaTime) override;
 	void OnUnscrewed();
@@ -27,4 +28,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AScrew> ScrewClass;
+
+	UPROPERTY(VisibleAnywhere)
+	UPhysicsConstraintComponent* PhysicsConstraint;
 };

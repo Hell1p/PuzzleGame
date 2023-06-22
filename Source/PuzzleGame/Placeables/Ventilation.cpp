@@ -11,8 +11,9 @@ AVentilation::AVentilation()
 
 	VentilationMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VentilationMesh"));
 	VentilationMesh->SetupAttachment(RootComponent);
-
 	
+	PhysicsConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("PhysicsConstraint"));
+	PhysicsConstraint->SetupAttachment(RootComponent);
 }
 
 void AVentilation::BeginPlay()
@@ -31,7 +32,6 @@ void AVentilation::BeginPlay()
 void AVentilation::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AVentilation::OnUnscrewed()
