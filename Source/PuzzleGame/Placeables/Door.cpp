@@ -20,10 +20,13 @@ void ADoor::BeginPlay()
 void ADoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+<<<<<<< Updated upstream
 
 	if (Button && Button->GetbCubePlaced())
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Emerald, TEXT("DoorOpens"));
 	}
+=======
+>>>>>>> Stashed changes
 }
 

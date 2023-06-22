@@ -54,5 +54,5 @@ private:
 	UStaticMeshComponent* RCControllerMesh;
 
 public:
-	UStaticMeshComponent* GetRCControllerMesh() const { return RCControllerMesh; }
+	FORCEINLINE UStaticMeshComponent* GetRCControllerMesh() const { return RCControllerMesh; }
 };

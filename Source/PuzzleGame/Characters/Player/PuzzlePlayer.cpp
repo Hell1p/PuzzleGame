@@ -4,14 +4,20 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraShakeBase.h"
 #include "Components/ProgressBar.h"
+#include "Engine/PointLight.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
+<<<<<<< Updated upstream
+=======
+#include "Kismet/GameplayStatics.h"
+>>>>>>> Stashed changes
 #include "Kismet/KismetMathLibrary.h"
 #include "PuzzleGame/HUD/PlayerOverlay.h"
 #include "PuzzleGame/HUD/PuzzleHUD.h"
 #include "PuzzleGame/Pawns/RCCar/RCCar.h"
 #include "PuzzleGame/Tools/Flashlight.h"
 #include "PuzzleGame/PlayerController/PuzzlePlayerController.h"
+#include "PuzzleGame/Placeables/LightSource.h"
 
 APuzzlePlayer::APuzzlePlayer()
 {
@@ -30,9 +36,11 @@ void APuzzlePlayer::BeginPlay()
 	Super::BeginPlay();
 	if (GetMesh()) GetMesh()->SetVisibility(false);
 
+	HandleSanity();
 	InitializeInventoryTools();
 	InitializePuzzleOverlay();
 	CurrentStamina = MaxStamina;
+	CurrentSanity = MaxSanity;
 	if (HUD) HUD->GetPlayerOverlay()->StaminaBar->SetVisibility(ESlateVisibility::Hidden);
 	StaminaBarHidden = true;
 }
@@ -40,6 +48,8 @@ void APuzzlePlayer::BeginPlay()
 void APuzzlePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Cyan, FString::Printf(TEXT("%hhd"), bInLight));
 	
 	if (bGrabbingObject)
 	{
@@ -72,7 +82,6 @@ void APuzzlePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &APuzzlePlayer::SprintEnd);
 	PlayerInputComponent->BindAction(TEXT("On_OffFlashLight"), IE_Pressed, this, &APuzzlePlayer::FlashlightOn_Off);
 	PlayerInputComponent->BindAction(TEXT("ToggleRCCar"), IE_Pressed, this, &APuzzlePlayer::ToggleRCCar);
-
 	PlayerInputComponent->BindAction(TEXT("SlotSwitch_1"), IE_Pressed, this, &APuzzlePlayer::SlotSwitch_1);
 	PlayerInputComponent->BindAction(TEXT("SlotSwitch_2"), IE_Pressed, this, &APuzzlePlayer::SlotSwitch_2);
 }
@@ -321,6 +330,12 @@ void APuzzlePlayer::HandleStamina(float DeltaTime)
 	Velocity.Z = 0.f;
 	if (bSprinting && CurrentStamina >= SprintCost && Velocity.Size() > 0.f)
 	{
+		if (bCrouching)
+		{
+			bWantsToSprint = true;
+			bSprinting = false;
+			return;
+		}
 		UseStamina(SprintCost);
 		if (HUD) HUD->SetStaminaBarPercent(CurrentStamina / MaxStamina);
 	}
@@ -392,4 +407,30 @@ void APuzzlePlayer::SlotSwitch_2() // RCCar
 	}
 	PlayerToolEquippedState = EPlayerToolEquippedState::EPTES_RCCar;
 	RCCar->GetRCControllerMesh()->SetVisibility(true);
+}
+
+void APuzzlePlayer::OnLightOverlap()
+{
+	bInLight = true;
+}
+
+void APuzzlePlayer::OnLightEndOverlap()
+{
+	bInLight = false;
+}
+
+void APuzzlePlayer::HandleSanity()
+{
+	GetWorldTimerManager().SetTimer(SanityTimer, this, &APuzzlePlayer::OnSanityTimerFinished, SanityLoseDelay);
+}
+
+void APuzzlePlayer::OnSanityTimerFinished()
+{
+	if (!bInLight)
+	{
+		CurrentSanity = FMath::Clamp(CurrentSanity - SanityCost, 0.f, MaxSanity);
+	}
+//	if (CurrentSanity == 0.f) return; TODO: make the player die
+	HandleSanity();
+	GEngine->AddOnScreenDebugMessage(-1, SanityLoseDelay, FColor::Emerald, FString::Printf(TEXT("%f"), CurrentSanity));
 }

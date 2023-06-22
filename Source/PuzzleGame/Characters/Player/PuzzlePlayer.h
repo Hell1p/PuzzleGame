@@ -12,6 +12,7 @@ class APuzzleHUD;
 class ARCCar;
 class AFlashlight;
 class UPlayerOverlay;
+class ALightSource;
 class APuzzlePlayerController;
 
 UENUM(BlueprintType)
@@ -27,8 +28,13 @@ enum class EMovementDirectionState : uint8
 UENUM(BlueprintType)
 enum class EPlayerToolEquippedState : uint8
 {
+<<<<<<< Updated upstream
 	EPTES_Flashlight UMETA(DisplayName = "Flashlight"), // First slot
 	EPTES_RCCar UMETA(DisplayName = "RCCar"), // Second slot
+=======
+	EPTES_Flashlight UMETA(DisplayName = "Flashlight"),	// First slot
+	EPTES_RCCar UMETA(DisplayName = "RCCar"), 	// Second slot
+>>>>>>> Stashed changes
 
 	EPTES_MAX UMETA(DisplayName = "DefaultMAX")
 };
@@ -43,6 +49,9 @@ public:
 	void InitializeInventoryTools();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void OnLightOverlap();
+	void OnLightEndOverlap();
 
 protected:
 	virtual void BeginPlay() override;
@@ -107,6 +116,7 @@ private:
 	void SlotSwitch_1(); // Flashlight
 	void SlotSwitch_2(); // RCCar
 
+	bool bInLight;
 	bool bPrevLightTurnedOn;
 	APuzzlePlayerController* PuzzlePlayerController;
 	float RegenDeltaTime;
@@ -134,6 +144,9 @@ private:
 	AFlashlight* Flashlight;
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
+	TSubclassOf<ALightSource> LightSourceClass;
+
+	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float GrabDistance = 300.f;
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
@@ -151,6 +164,27 @@ private:
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float StaminaBar_Hide_ShowDelay = 10.f;
 
+<<<<<<< Updated upstream
+=======
+	UPROPERTY(EditAnywhere, Category = PlayerStats)
+	float MaxSanity = 100.f;
+	
+	float CurrentSanity;
+
+	UPROPERTY(EditAnywhere, Category = PlayerStats)
+	float SanityCost = 1.f;
+
+	FTimerHandle SanityTimer;
+	void OnSanityTimerFinished();
+	void HandleSanity();
+	UPROPERTY(EditAnywhere, Category = PlayerStats)
+	float SanityLoseDelay = 10.f;
+
+	UPROPERTY(VisibleAnywhere)
+	UPhysicsHandleComponent* PhysicsHandle;
+
+>>>>>>> Stashed changes
 public:
 	APuzzlePlayerController* GetPuzzlePlayerController();
+	bool GetbCrouching() const { return bCrouching; }
 };

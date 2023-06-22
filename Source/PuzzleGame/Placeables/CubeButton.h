@@ -35,5 +35,5 @@ private:
 	bool bCubePlaced;
 	
 public:
-	bool GetbCubePlaced() const { return bCubePlaced; }
+	FORCEINLINE bool GetbCubePlaced() const { return bCubePlaced; }
 };
