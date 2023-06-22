@@ -198,9 +198,10 @@ void APuzzlePlayer::SetGrabbedObjectLocation()
 
 void APuzzlePlayer::DirectionalMovement()
 {
-	FVector Velocity = GetVelocity();
-	FRotator Rotation = GetActorRotation();
-	float Direction = GetMesh()->GetAnimInstance()->CalculateDirection(Velocity, Rotation);
+	const FVector Velocity = GetVelocity();
+	const FRotator Rotation = GetActorRotation();
+	
+	const float Direction = GetMesh()->GetAnimInstance()->CalculateDirection(Velocity, Rotation);
 	
 	if (Direction >= -50.f && Direction <= 50.f && !bSprinting && !bCrouching)
 	{
@@ -266,15 +267,6 @@ void APuzzlePlayer::Jump()
 	{
 		Super::Jump();
 	}
-
-}
-
-void APuzzlePlayer::Jump()
-{
-	if (!bBlockingHitR)
-	{
-		Super::Jump();
-	}
 }
 
 void APuzzlePlayer::RegenerateStamina(float DeltaTime)
@@ -312,7 +304,7 @@ void APuzzlePlayer::InitializeInventoryTools()
 	Flashlight = FlashlightToEquip;
 	Flashlight->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("S_Flashlight"));
 
-	/** RCCar */ //сасі
+	/** RCCar */ 
 	if (RCCarClass == nullptr) return;
 	ARCCar* RCCarToEquip = GetWorld()->SpawnActor<ARCCar>(RCCarClass);
 	if (RCCarToEquip == nullptr) return;
