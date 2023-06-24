@@ -40,6 +40,18 @@ private:
 	APuzzlePlayer* Player;
 	bool bOverlappingPlayer;
 
+	UPROPERTY(EditAnywhere, Category = LightProperties)
+	float OnMaxTime = .75f;
+
+	UPROPERTY(EditAnywhere, Category = LightProperties)
+	float OffMaxTime = .75f;
+	
+	UPROPERTY(EditAnywhere, Category = LightProperties)
+	bool bLightBlink = false;
+
+	void OnBlinkTimerFinished();
+	void OffBlinkTimerFinished();
+
 public:
 	FORCEINLINE bool GetbOverlappingPlayer() const { return bOverlappingPlayer; }
 };

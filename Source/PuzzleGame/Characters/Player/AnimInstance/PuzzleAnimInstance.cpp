@@ -22,4 +22,6 @@ void UPuzzleAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 	Speed = PuzzlePlayer->GetVelocity().Size();
 	bIsCrouching = PuzzlePlayer->GetbCrouching();
+	bIsSprinting = PuzzlePlayer->GetbSprinting();
+	Direction = CalculateDirection(PuzzlePlayer->GetVelocity(), PuzzlePlayer->GetActorRotation());
 }
