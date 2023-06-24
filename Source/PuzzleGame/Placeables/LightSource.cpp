@@ -11,7 +11,7 @@ ALightSource::ALightSource()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	LightSourceMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("LightSourceMesh"));
+	LightSourceMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LightSourceMesh"));
 	RootComponent = LightSourceMesh;
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));

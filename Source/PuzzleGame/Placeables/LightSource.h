@@ -29,7 +29,7 @@ protected:
 
 private:	
 	UPROPERTY(VisibleAnywhere)
-	USkeletalMeshComponent* LightSourceMesh;
+	UStaticMeshComponent* LightSourceMesh;
 	
 	UPROPERTY(VisibleAnywhere)
 	USpotLightComponent* SpotLight;

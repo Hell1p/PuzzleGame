@@ -455,6 +455,6 @@ void APuzzlePlayer::HandleSteps()
 
 	if (SurfaceType == EPS_Stone)
 	{
-		if (RockFootstepsCue) UGameplayStatics::PlaySoundAtLocation(GetWorld(), RockFootstepsCue, GetActorLocation(), GetActorRotation());
+		if (RockFootstepsCue) UGameplayStatics::PlaySoundAtLocation(GetWorld(), RockFootstepsCue, GetActorLocation(), GetActorRotation(), 1.f, 1.f, 0.f, nullptr, FootstepsConcurrency);
 	}
 }

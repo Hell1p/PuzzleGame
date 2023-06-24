@@ -16,6 +16,7 @@ class UPlayerOverlay;
 class ALightSource;
 class APuzzlePlayerController;
 class USoundCue;
+class USoundConcurrency;
 
 UENUM(BlueprintType)
 enum class EMovementDirectionState : uint8
@@ -195,6 +196,9 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundCue* RockFootstepsCue;
+	
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundConcurrency* FootstepsConcurrency;
 
 public:
 	APuzzlePlayerController* GetPuzzlePlayerController();
