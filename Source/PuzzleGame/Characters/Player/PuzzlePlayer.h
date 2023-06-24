@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "PuzzlePlayer.generated.h"
 
+class USpringArmComponent;
 class UCameraComponent;
 class UPhysicsHandleComponent;
 class APlayerController;
@@ -28,14 +29,8 @@ enum class EMovementDirectionState : uint8
 UENUM(BlueprintType)
 enum class EPlayerToolEquippedState : uint8
 {
-<<<<<<< Updated upstream
 	EPTES_Flashlight UMETA(DisplayName = "Flashlight"), // First slot
 	EPTES_RCCar UMETA(DisplayName = "RCCar"), // Second slot
-=======
-	EPTES_Flashlight UMETA(DisplayName = "Flashlight"),	// First slot
-	EPTES_RCCar UMETA(DisplayName = "RCCar"), 	// Second slot
->>>>>>> Stashed changes
-
 	EPTES_MAX UMETA(DisplayName = "DefaultMAX")
 };
 
@@ -74,6 +69,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	bool bSprinting;
 	UPROPERTY(BlueprintReadWrite)
+	bool CanSetFOV;
+	UPROPERTY(BlueprintReadWrite)
 	bool bBlockingHitR;
 	bool bBlockingHit;
 	
@@ -96,10 +93,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Movement, BlueprintReadOnly)
 	float DefaultFOV = 90.f;
 	float CurrentFOV;
-	
+
+	UPROPERTY(BlueprintReadWrite)
+	float CurrentSanity;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UCameraComponent* PlayerCamera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USpringArmComponent* SpringArmComponent;
 private:
 	void RegenerateStamina(float DeltaTime);
 	void StaminaBarHide();
@@ -118,14 +120,18 @@ private:
 
 	bool bInLight;
 	bool bPrevLightTurnedOn;
+	UPROPERTY(VisibleAnywhere)
 	APuzzlePlayerController* PuzzlePlayerController;
 	float RegenDeltaTime;
 	bool bWantsToSprint;
 	FTimerHandle StaminaRegenTimer;
 	float AO_Pitch;
 	FRotator StartingAimRotation;
+	UPROPERTY(VisibleAnywhere)
 	APlayerController* PlayerController;
+	UPROPERTY(VisibleAnywhere)
 	APuzzleHUD* HUD;
+	UPROPERTY(VisibleAnywhere)
 	UPlayerOverlay* PlayerOverlay;
 	bool bGrabbingObject;
 	bool StaminaBarHidden;
@@ -137,10 +143,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	TSubclassOf<ARCCar> RCCarClass;
+	UPROPERTY(VisibleAnywhere)
 	ARCCar* RCCar;
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	TSubclassOf<AFlashlight> FlashlightClass;
+	UPROPERTY(VisibleAnywhere)
 	AFlashlight* Flashlight;
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
@@ -163,14 +171,11 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float StaminaBar_Hide_ShowDelay = 10.f;
-
-<<<<<<< Updated upstream
-=======
+	
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float MaxSanity = 100.f;
-	
-	float CurrentSanity;
 
+	
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float SanityCost = 1.f;
 
@@ -180,10 +185,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float SanityLoseDelay = 10.f;
 
-	UPROPERTY(VisibleAnywhere)
-	UPhysicsHandleComponent* PhysicsHandle;
-
->>>>>>> Stashed changes
 public:
 	APuzzlePlayerController* GetPuzzlePlayerController();
 	bool GetbCrouching() const { return bCrouching; }

@@ -7,10 +7,7 @@
 #include "Engine/PointLight.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
-<<<<<<< Updated upstream
-=======
 #include "Kismet/GameplayStatics.h"
->>>>>>> Stashed changes
 #include "Kismet/KismetMathLibrary.h"
 #include "PuzzleGame/HUD/PlayerOverlay.h"
 #include "PuzzleGame/HUD/PuzzleHUD.h"
@@ -25,8 +22,9 @@ APuzzlePlayer::APuzzlePlayer()
 
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	PlayerCamera->SetupAttachment(RootComponent);
-
-	GetMesh()->SetupAttachment(PlayerCamera);
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
+	SpringArmComponent->SetupAttachment(PlayerCamera);
+	GetMesh()->SetupAttachment(SpringArmComponent);
 	
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
 }
@@ -140,6 +138,7 @@ void APuzzlePlayer::SprintStart()
 }
 void APuzzlePlayer::SprintEnd()
 {
+	
 	bWantsToSprint = false;
 	bSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
@@ -169,11 +168,11 @@ void APuzzlePlayer::SetSprintingFOV(float DeltaTime)
 	{
 		CurrentFOV = FMath::FInterpTo(CurrentFOV, SprintFOV, DeltaTime, 2.f);
 	}
-	else
+	else 
 	{
 		CurrentFOV = FMath::FInterpTo(CurrentFOV, DefaultFOV, DeltaTime, 10.f);
 	}
-	if (PlayerCamera)
+	if (PlayerCamera && CanSetFOV)
 	{
 		PlayerCamera->SetFieldOfView(CurrentFOV);
 	}
