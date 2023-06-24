@@ -4,3 +4,4 @@
 
 #include "CoreMinimal.h"
 
+#define EPS_Stone EPhysicalSurface::SurfaceType1

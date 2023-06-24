@@ -15,6 +15,7 @@ class AFlashlight;
 class UPlayerOverlay;
 class ALightSource;
 class APuzzlePlayerController;
+class USoundCue;
 
 UENUM(BlueprintType)
 enum class EMovementDirectionState : uint8
@@ -31,6 +32,7 @@ enum class EPlayerToolEquippedState : uint8
 {
 	EPTES_Flashlight UMETA(DisplayName = "Flashlight"), // First slot
 	EPTES_RCCar UMETA(DisplayName = "RCCar"), // Second slot
+
 	EPTES_MAX UMETA(DisplayName = "DefaultMAX")
 };
 
@@ -113,6 +115,11 @@ private:
 	void InitializePuzzleOverlay();
 	void SetSprintingFOV(float DeltaTime);
 	void UseStamina(float StaminaCost);
+	void OnSanityTimerFinished();
+	void HandleSanity();
+
+	UFUNCTION(BlueprintCallable)
+	void HandleSteps();
 	
 	void ToggleRCCar();
 	void SlotSwitch_1(); // Flashlight
@@ -137,6 +144,9 @@ private:
 	bool StaminaBarHidden;
 	bool StaminaBarTimerStarted;
 	FTimerHandle StaminaBarHideTimer;
+
+	UPROPERTY(EditAnywhere, Category = PlayerStats)
+	float StepDistance = 700.f;
 
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsHandleComponent* PhysicsHandle;
@@ -171,21 +181,23 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float StaminaBar_Hide_ShowDelay = 10.f;
-	
+
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float MaxSanity = 100.f;
-
 	
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float SanityCost = 1.f;
 
 	FTimerHandle SanityTimer;
-	void OnSanityTimerFinished();
-	void HandleSanity();
+	
 	UPROPERTY(EditAnywhere, Category = PlayerStats)
 	float SanityLoseDelay = 10.f;
+	
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* RockFootstepsCue;
 
 public:
 	APuzzlePlayerController* GetPuzzlePlayerController();
 	bool GetbCrouching() const { return bCrouching; }
+	bool GetbSprinting() const { return bSprinting; }
 };

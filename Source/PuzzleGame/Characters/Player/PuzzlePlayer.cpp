@@ -3,18 +3,19 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraShakeBase.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/ProgressBar.h"
-#include "Engine/PointLight.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "PuzzleGame/HUD/PlayerOverlay.h"
 #include "PuzzleGame/HUD/PuzzleHUD.h"
 #include "PuzzleGame/Pawns/RCCar/RCCar.h"
 #include "PuzzleGame/Tools/Flashlight.h"
 #include "PuzzleGame/PlayerController/PuzzlePlayerController.h"
-#include "PuzzleGame/Placeables/LightSource.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
+#include "PuzzleGame/PuzzleGame.h"
+#include "Sound/SoundCue.h"
 
 APuzzlePlayer::APuzzlePlayer()
 {
@@ -432,4 +433,28 @@ void APuzzlePlayer::OnSanityTimerFinished()
 //	if (CurrentSanity == 0.f) return; TODO: make the player die
 	HandleSanity();
 	GEngine->AddOnScreenDebugMessage(-1, SanityLoseDelay, FColor::Emerald, FString::Printf(TEXT("%f"), CurrentSanity));
+}
+
+void APuzzlePlayer::HandleSteps()
+{
+	if (GetWorld() == nullptr) return;
+	
+	FHitResult HitResult;
+	FVector Start = PlayerCamera->GetComponentLocation();
+	FVector End = PlayerCamera->GetComponentLocation() + (-GetCapsuleComponent()->GetUpVector()) * StepDistance;
+	FCollisionQueryParams TraceParams;
+	TraceParams.AddIgnoredActor(this);
+	TraceParams.bReturnPhysicalMaterial = true;
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, TraceParams);
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, true);
+	
+	if (!HitResult.bBlockingHit) return;
+
+	UPhysicalMaterial* PhysMaterial = HitResult.PhysMaterial.Get();
+	EPhysicalSurface SurfaceType = PhysMaterial->SurfaceType;
+
+	if (SurfaceType == EPS_Stone)
+	{
+		if (RockFootstepsCue) UGameplayStatics::PlaySoundAtLocation(GetWorld(), RockFootstepsCue, GetActorLocation(), GetActorRotation());
+	}
 }
