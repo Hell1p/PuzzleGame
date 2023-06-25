@@ -15,6 +15,7 @@
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "PuzzleGame/PuzzleGame.h"
 #include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 
 APuzzlePlayer::APuzzlePlayer()
 {
@@ -22,9 +23,11 @@ APuzzlePlayer::APuzzlePlayer()
 
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	PlayerCamera->SetupAttachment(RootComponent);
-
-	GetMesh()->SetupAttachment(PlayerCamera);
 	
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
+	SpringArmComponent->SetupAttachment(PlayerCamera);
+	GetMesh()->SetupAttachment(SpringArmComponent);
+
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
 }
 
