@@ -17,6 +17,7 @@ class ALightSource;
 class APuzzlePlayerController;
 class USoundCue;
 class USoundConcurrency;
+class UAudioComponent;
 
 UENUM(BlueprintType)
 enum class EMovementDirectionState : uint8
@@ -47,7 +48,7 @@ public:
 	void InitializeInventoryTools();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
 	void OnLightOverlap();
 	void OnLightEndOverlap();
 
@@ -200,6 +201,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundConcurrency* FootstepsConcurrency;
 
+	UAudioComponent* AudioComponent;
+	
 public:
 	APuzzlePlayerController* GetPuzzlePlayerController();
 	bool GetbCrouching() const { return bCrouching; }

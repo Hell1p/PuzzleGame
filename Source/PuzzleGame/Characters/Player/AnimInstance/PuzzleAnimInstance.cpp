@@ -2,8 +2,7 @@
 
 
 #include "PuzzleAnimInstance.h"
-
-#include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "PuzzleGame/Characters/Player/PuzzlePlayer.h"
 
 void UPuzzleAnimInstance::NativeInitializeAnimation()
@@ -24,4 +23,5 @@ void UPuzzleAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	bIsCrouching = PuzzlePlayer->GetbCrouching();
 	bIsSprinting = PuzzlePlayer->GetbSprinting();
 	Direction = CalculateDirection(PuzzlePlayer->GetVelocity(), PuzzlePlayer->GetActorRotation());
+	bIsInAir = PuzzlePlayer->GetCharacterMovement()->IsFalling();
 }

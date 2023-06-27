@@ -4,6 +4,8 @@
 #include "Flashlight.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SpotLightComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
 
 AFlashlight::AFlashlight()
 {
@@ -26,12 +28,15 @@ void AFlashlight::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AFlashlight::LightTurnOff()
+void AFlashlight::LightTurnOff(bool PlaySound)
 {
 	SpotLight->SetVisibility(false);
+	
+	if (PlaySound) UGameplayStatics::PlaySoundAtLocation(this, FlashlightOffSound, GetActorLocation(), GetActorRotation());
 }
 
-void AFlashlight::LightTurnOn()
+void AFlashlight::LightTurnOn(bool PlaySound)
 {
 	SpotLight->SetVisibility(true);
+	if (PlaySound) UGameplayStatics::PlaySoundAtLocation(this, FlashlightOnSound, GetActorLocation(), GetActorRotation());
 }

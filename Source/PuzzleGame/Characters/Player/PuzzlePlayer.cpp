@@ -27,9 +27,11 @@ APuzzlePlayer::APuzzlePlayer()
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	SpringArmComponent->SetupAttachment(PlayerCamera);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(RootComponent);
+	AudioComponent->bReverb = true;
 	
-	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
-	SpringArmComponent->SetupAttachment(PlayerCamera);
 	GetMesh()->SetupAttachment(SpringArmComponent);
 
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
@@ -156,12 +158,12 @@ void APuzzlePlayer::FlashlightOn_Off()
 	
 	if (!Flashlight->GetbFlashlightTurnedOn())
 	{
-		Flashlight->LightTurnOn();
+		Flashlight->LightTurnOn(true);
 		Flashlight->SetbFlashlightTurnedOn(true);
 	}
 	else
 	{
-		Flashlight->LightTurnOff();
+		Flashlight->LightTurnOff(true);
 		Flashlight->SetbFlashlightTurnedOn(false);
 	}
 }
@@ -397,7 +399,7 @@ void APuzzlePlayer::SlotSwitch_1() // Flashlight
 	}
 	PlayerToolEquippedState = EPlayerToolEquippedState::EPTES_Flashlight;
 	Flashlight->GetFlashlightMesh()->SetVisibility(true);
-	if (bPrevLightTurnedOn) Flashlight->LightTurnOn();
+	if (bPrevLightTurnedOn) Flashlight->LightTurnOn(false);
 }
 
 void APuzzlePlayer::SlotSwitch_2() // RCCar
@@ -407,7 +409,7 @@ void APuzzlePlayer::SlotSwitch_2() // RCCar
 	if (Flashlight && PlayerToolEquippedState == EPlayerToolEquippedState::EPTES_Flashlight)
 	{
 		bPrevLightTurnedOn = Flashlight->GetbFlashlightTurnedOn();
-		Flashlight->LightTurnOff();
+		Flashlight->LightTurnOff(false);
 		Flashlight->GetFlashlightMesh()->SetVisibility(false);
 	}
 	PlayerToolEquippedState = EPlayerToolEquippedState::EPTES_RCCar;
@@ -451,7 +453,6 @@ void APuzzlePlayer::HandleSteps()
 	TraceParams.AddIgnoredActor(this);
 	TraceParams.bReturnPhysicalMaterial = true;
 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, TraceParams);
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red, true);
 	
 	if (!HitResult.bBlockingHit) return;
 
@@ -460,6 +461,10 @@ void APuzzlePlayer::HandleSteps()
 
 	if (SurfaceType == EPS_Stone)
 	{
-		if (RockFootstepsCue) UGameplayStatics::PlaySoundAtLocation(GetWorld(), RockFootstepsCue, GetActorLocation(), GetActorRotation(), 1.f, 1.f, 0.f, nullptr, FootstepsConcurrency);
+		if (RockFootstepsCue)
+		{
+			AudioComponent->SetSound(RockFootstepsCue);
+			AudioComponent->Play();
+		}
 	}
 }

@@ -23,12 +23,13 @@ UCLASS()
 class PUZZLEGAME_API ARCCar : public AWheeledVehiclePawn
 {
 	GENERATED_BODY()
+	
 public:
 	ARCCar();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void Activate(APuzzlePlayer* Player, APuzzlePlayerController* CharacterController);
-	
+
 protected:
 	virtual void BeginPlay() override;
     

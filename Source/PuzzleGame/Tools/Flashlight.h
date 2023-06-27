@@ -8,6 +8,7 @@
 
 class USpotLightComponent;
 class USkeletalMeshComponent;
+class USoundBase;
 
 UCLASS()
 class PUZZLEGAME_API AFlashlight : public AActor
@@ -18,8 +19,8 @@ public:
 	AFlashlight();
 	virtual void Tick(float DeltaTime) override;
 
-	void LightTurnOff();
-	void LightTurnOn();
+	void LightTurnOff(bool PlaySound);
+	void LightTurnOn(bool PlaySound);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -32,7 +33,15 @@ private:
 	USpotLightComponent* SpotLight;
 
 	bool bFlashlightTurnedOn = true;
+	
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* FlashlightOnSound;
+	
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* FlashlightOffSound;
 
+	USoundConcurrency* FootstepsConcurrency;
+	
 public:
 	bool GetbFlashlightTurnedOn() const { return bFlashlightTurnedOn; }
 	void SetbFlashlightTurnedOn(bool bTurnedOn) { bFlashlightTurnedOn = bTurnedOn; }
