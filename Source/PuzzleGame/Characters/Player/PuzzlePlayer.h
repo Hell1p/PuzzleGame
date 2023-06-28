@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "PuzzlePlayer.generated.h"
 
+class USpringArmComponent;
 class UCameraComponent;
 class UPhysicsHandleComponent;
 class APlayerController;
@@ -95,6 +96,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UCameraComponent* PlayerCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USpringArmComponent* SpringArmComponent;
 
 private:
 	void RegenerateStamina(float DeltaTime);
