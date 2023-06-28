@@ -106,6 +106,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USpringArmComponent* SpringArmComponent;
+
 private:
 	void RegenerateStamina(float DeltaTime);
 	void StaminaBarHide();

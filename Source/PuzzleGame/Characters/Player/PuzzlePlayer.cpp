@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "PuzzleGame/HUD/PlayerOverlay.h"
 #include "PuzzleGame/HUD/PuzzleHUD.h"
 #include "PuzzleGame/Pawns/RCCar/RCCar.h"
@@ -244,7 +245,7 @@ void APuzzlePlayer::DirectionalMovement()
 
 void APuzzlePlayer::StartSprintingWhenNeeded()
 {
-	if ((!bCrouching && bWantsToSprint) || (PlayerMovementDirectionState != EMovementDirectionState::EMDS_Backward && bWantsToSprint)) SprintStart();
+	if ((!bCrouching && bWantsToSprint) || (!bCrouching && PlayerMovementDirectionState != EMovementDirectionState::EMDS_Backward && bWantsToSprint)) SprintStart();
 }
 
 void APuzzlePlayer::InteractCrosshair()
