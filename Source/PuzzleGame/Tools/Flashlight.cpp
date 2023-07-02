@@ -9,7 +9,7 @@
 
 AFlashlight::AFlashlight()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	
 	FlashlightMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FlashlightMesh"));
 	FlashlightMesh->SetupAttachment(RootComponent);

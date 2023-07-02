@@ -5,7 +5,7 @@
 
 ACubeButton::ACubeButton()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	ButtonMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ButtonMesh"));
 	SetRootComponent(ButtonMesh);
