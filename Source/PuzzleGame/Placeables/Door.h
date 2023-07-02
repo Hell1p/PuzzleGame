@@ -7,6 +7,7 @@
 #include "Door.generated.h"
 
 class ACubeButton;
+class ACardReader;
 
 UCLASS()
 class PUZZLEGAME_API ADoor : public AActor
@@ -26,7 +27,20 @@ private:
 	
 	UPROPERTY(EditInstanceOnly, Category = DoorProperties)
 	ACubeButton* Button;
-	
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* LeftDoorMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* RightDoorMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* FrameMesh;
+
 public:
-	
+	UFUNCTION(BlueprintCallable)
+	UStaticMeshComponent* GetLeftDoorMesh() const { return LeftDoorMesh; }
+
+	UFUNCTION(BlueprintCallable)
+	UStaticMeshComponent* GetRightDoorMesh() const { return RightDoorMesh; }
 };

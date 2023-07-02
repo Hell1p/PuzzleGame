@@ -2,14 +2,22 @@
 
 
 #include "Door.h"
-#include "PuzzleGame/Placeables/CubeButton.h"
 
 ADoor::ADoor()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	DoorMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("DoorMesh"));
 	SetRootComponent(DoorMesh);
+
+	FrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
+	FrameMesh->SetupAttachment(RootComponent);
+
+	LeftDoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftDoorMesh"));
+	LeftDoorMesh->SetupAttachment(FrameMesh);
+
+	RightDoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightDoorMesh"));
+	RightDoorMesh->SetupAttachment(FrameMesh);
 }
 
 void ADoor::BeginPlay()
@@ -20,13 +28,9 @@ void ADoor::BeginPlay()
 void ADoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-<<<<<<< Updated upstream
 
 	if (Button && Button->GetbCubePlaced())
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Emerald, TEXT("DoorOpens"));
 	}
-=======
->>>>>>> Stashed changes
 }
-
