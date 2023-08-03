@@ -21,8 +21,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-private:
-	void MoveToTarget(AActor* Target);
+	virtual void MoveToTarget(AActor* Target);
 	bool InTargetRange(AActor* Target, double Radius);
 	void OnBeginChaseTimerEnd();
  
@@ -34,4 +33,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent* PawnSensing;
+
+private:
 };

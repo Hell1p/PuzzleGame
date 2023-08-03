@@ -15,6 +15,8 @@ ABaseEnemy::ABaseEnemy()
 	PrimaryActorTick.bCanEverTick = true;
 
 	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
+	PawnSensing->SightRadius = 4000.f;
+	PawnSensing->SetPeripheralVisionAngle(45.f);
 }
 
 void ABaseEnemy::BeginPlay()
@@ -46,7 +48,7 @@ void ABaseEnemy::Tick(float DeltaTime)
 
 void ABaseEnemy::MoveToTarget(AActor* Target)
 {
-	if (EnemyController == nullptr) return;
+	if (EnemyController == nullptr || Target == nullptr) return;
 
 	bChasing = true;
 	FAIMoveRequest MoveRequest;

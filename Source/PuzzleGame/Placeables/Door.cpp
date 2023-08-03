@@ -2,13 +2,11 @@
 
 
 #include "Door.h"
+#include "CubeButton.h"
 
 ADoor::ADoor()
 {
 	PrimaryActorTick.bCanEverTick = false;
-
-	DoorMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("DoorMesh"));
-	SetRootComponent(DoorMesh);
 
 	FrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
 	FrameMesh->SetupAttachment(RootComponent);

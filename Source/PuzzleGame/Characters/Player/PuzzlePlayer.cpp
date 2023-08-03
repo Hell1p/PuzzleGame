@@ -50,6 +50,8 @@ void APuzzlePlayer::BeginPlay()
 	CurrentSanity = MaxSanity;
 	if (HUD) HUD->GetPlayerOverlay()->StaminaBar->SetVisibility(ESlateVisibility::Hidden);
 	StaminaBarHidden = true;
+
+	Tags.Add(FName("PuzzlePlayer"));
 }
 
 void APuzzlePlayer::Tick(float DeltaTime)
